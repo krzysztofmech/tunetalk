@@ -1,0 +1,23 @@
+{
+  "name": "tunetalk-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "tsc -w",
+    "dev": "nodemon dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@apollo/server": "^4.7.1",
+    "graphql": "^16.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.1.4",
+    "nodemon": "^2.0.22",
+    "typescript": "^5.0.4"
+  }
+}
