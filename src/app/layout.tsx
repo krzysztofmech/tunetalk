@@ -1,11 +1,8 @@
-"use client";
-import { SessionProvider } from "next-auth/react";
-import { ApolloProvider } from "@apollo/client";
-import { ThemeProvider } from "@mui/material";
-import "./global.css";
+import AuthContext from "../providers/AuthProvider";
 import StyledJsxRegistry from "./registry";
-import { theme } from "@/styles/mui/theme";
-import { client } from "@/client";
+import ThemeProvider from "../providers/ThemeProvider";
+import "./global.css";
+import ApolloClientProvider from "@/providers/ApolloClientProvider";
 
 export default function RootLayout({
   children,
@@ -15,13 +12,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SessionProvider>
-          <ApolloProvider client={client}>
+        <AuthContext>
+          <ApolloClientProvider>
             <StyledJsxRegistry>
-              <ThemeProvider theme={theme}>{children}</ThemeProvider>
+              <ThemeProvider>{children}</ThemeProvider>
             </StyledJsxRegistry>
-          </ApolloProvider>
-        </SessionProvider>
+          </ApolloClientProvider>
+        </AuthContext>
       </body>
     </html>
   );

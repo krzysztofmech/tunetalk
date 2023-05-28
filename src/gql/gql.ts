@@ -13,8 +13,8 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n    mutation Authenticate {\n      authenticate\n    }\n  ": types.AuthenticateDocument,
-    "\n    mutation Login($code: String, $state: String) {\n      login(code: $code, state: $state) {\n        code\n        state\n      }\n    }\n  ": types.LoginDocument,
+    "\n  query User($id: Int!) {\n    user(id: $id) {\n      id\n      name\n      createdAt\n      updatedAt\n      image\n      email\n    }\n  }\n": types.UserDocument,
+    "\n  query Me {\n    me {\n      id\n      name\n      createdAt\n      updatedAt\n      image\n      email\n    }\n  }\n": types.MeDocument,
 };
 
 /**
@@ -34,11 +34,11 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n    mutation Authenticate {\n      authenticate\n    }\n  "): (typeof documents)["\n    mutation Authenticate {\n      authenticate\n    }\n  "];
+export function graphql(source: "\n  query User($id: Int!) {\n    user(id: $id) {\n      id\n      name\n      createdAt\n      updatedAt\n      image\n      email\n    }\n  }\n"): (typeof documents)["\n  query User($id: Int!) {\n    user(id: $id) {\n      id\n      name\n      createdAt\n      updatedAt\n      image\n      email\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n    mutation Login($code: String, $state: String) {\n      login(code: $code, state: $state) {\n        code\n        state\n      }\n    }\n  "): (typeof documents)["\n    mutation Login($code: String, $state: String) {\n      login(code: $code, state: $state) {\n        code\n        state\n      }\n    }\n  "];
+export function graphql(source: "\n  query Me {\n    me {\n      id\n      name\n      createdAt\n      updatedAt\n      image\n      email\n    }\n  }\n"): (typeof documents)["\n  query Me {\n    me {\n      id\n      name\n      createdAt\n      updatedAt\n      image\n      email\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
