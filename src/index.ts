@@ -2,13 +2,14 @@ import { ApolloServer } from "@apollo/server";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { expressMiddleware } from "@apollo/server/express4";
 import SpotifyApi from "./data-sources/spotify";
-import { readFileSync } from "fs";
+import { promises } from "fs";
 import { resolvers } from "./resolvers";
 import express, { Request, Response } from "express";
 import http from "http";
 import cors from "cors";
 import { json } from "body-parser";
 import { config } from "dotenv";
+import path from "path";
 config();
 
 export interface MyContext {
@@ -24,7 +25,16 @@ const main = async () => {
 
   const httpServer = http.createServer(app);
 
-  const typeDefs = readFileSync("./src/schema.graphql", { encoding: "utf-8" });
+  const schemaDir = `./src/schema/`;
+  const schema = await promises.readdir(schemaDir);
+
+  const typeDefs = await Promise.all(
+    schema.map((file: any) => {
+      const fullPath = path.join(schemaDir, file);
+      return promises.readFile(fullPath, { encoding: "utf-8" });
+    })
+  );
+
   const server = new ApolloServer<MyContext>({
     typeDefs,
     resolvers,
@@ -35,7 +45,9 @@ const main = async () => {
 
   app.use(
     "/graphql",
-    cors<cors.CorsRequest>({ origin: ["http://localhost:3000"] }),
+    cors<cors.CorsRequest>({
+      origin: ["http://localhost:3000"],
+    }),
     json(),
     expressMiddleware(server, {
       context: async ({ res, req }) => {
