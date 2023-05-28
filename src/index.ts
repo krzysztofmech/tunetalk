@@ -1,58 +1,59 @@
 import { ApolloServer } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import { expressMiddleware } from "@apollo/server/express4";
+import SpotifyApi from "./data-sources/spotify";
+import { readFileSync } from "fs";
+import { resolvers } from "./resolvers";
+import express, { Request, Response } from "express";
+import http from "http";
+import cors from "cors";
+import { json } from "body-parser";
+import { config } from "dotenv";
+config();
 
-// A schema is a collection of type definitions (hence "typeDefs")
-// that together define the "shape" of queries that are executed against
-// your data.
-const typeDefs = `#graphql
-  # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
+export interface MyContext {
+  dataSources: {
+    spotifyApi: SpotifyApi;
+  };
+  res: Response;
+  req: Request;
+}
 
-  # This "Book" type defines the queryable fields for every book in our data source.
-  type Book {
-    title: String
-    author: String
-  }
+const main = async () => {
+  const app = express();
 
-  # The "Query" type is special: it lists all of the available queries that
-  # clients can execute, along with the return type for each. In this
-  # case, the "books" query returns an array of zero or more Books (defined above).
-  type Query {
-    books: [Book]
-  }
-`;
+  const httpServer = http.createServer(app);
 
-const books = [
-  {
-    title: "The Awakening",
-    author: "Kate Chopin",
-  },
-  {
-    title: "City of Glass",
-    author: "Paul Auster",
-  },
-];
+  const typeDefs = readFileSync("./src/schema.graphql", { encoding: "utf-8" });
+  const server = new ApolloServer<MyContext>({
+    typeDefs,
+    resolvers,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  });
 
-// Resolvers define how to fetch the types defined in your schema.
-// This resolver retrieves books from the "books" array above.
-const resolvers = {
-  Query: {
-    books: () => books,
-  },
+  await server.start();
+
+  app.use(
+    "/graphql",
+    cors<cors.CorsRequest>({ origin: ["http://localhost:3000"] }),
+    json(),
+    expressMiddleware(server, {
+      context: async ({ res, req }) => {
+        return {
+          dataSources: {
+            spotifyApi: new SpotifyApi(),
+          },
+          res,
+          req,
+        };
+      },
+    })
+  );
+
+  await new Promise<void>((resolve) =>
+    httpServer.listen({ port: 4000 }, resolve)
+  );
+  console.log(`🚀 Server ready at http://localhost:4000/graphql`);
 };
 
-// The ApolloServer constructor requires two parameters: your schema
-// definition and your set of resolvers.
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-});
-
-// Passing an ApolloServer instance to the `startStandaloneServer` function:
-//  1. creates an Express app
-//  2. installs your ApolloServer instance as middleware
-//  3. prepares your app to handle incoming requests
-const { url } = await startStandaloneServer(server, {
-  listen: { port: 4000 },
-});
-
-console.log(`🚀  Server ready at: ${url}`);
+main();
