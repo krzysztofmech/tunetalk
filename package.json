@@ -1,0 +1,42 @@
+{
+  "name": "tunetalk-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "tsc -w",
+    "dev": "nodemon dist/index.js",
+    "migrate": "npx prisma migrate dev --name init",
+    "codegen": "graphql-codegen --config codegen.yml"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krzysztofmech/tunetalk-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/krzysztofmech/tunetalk-backend/issues"
+  },
+  "homepage": "https://github.com/krzysztofmech/tunetalk-backend#readme",
+  "devDependencies": {
+    "@graphql-codegen/cli": "3.3.1",
+    "@graphql-codegen/typescript": "3.0.4",
+    "@graphql-codegen/typescript-resolvers": "3.2.1",
+    "@types/cors": "^2.8.13",
+    "@types/node": "^20.1.4",
+    "dotenv": "^16.0.3",
+    "nodemon": "^2.0.22",
+    "prisma": "^4.14.0",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "@apollo/datasource-rest": "^6.0.0",
+    "@apollo/server": "^4.7.1",
+    "@prisma/client": "^4.14.0",
+    "graphql": "^16.6.0",
+    "graphql-scalars": "^1.22.0",
+    "pg": "^8.10.0"
+  }
+}

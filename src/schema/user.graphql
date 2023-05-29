@@ -1,0 +1,19 @@
+scalar Void
+scalar Date
+type User {
+  id: Int
+  name: String
+  email: String
+  image: String
+  createdAt: Date
+  updatedAt: Date
+}
+
+type Query {
+  me: User
+  user(id: Int!): User
+}
+
+type Mutation {
+  createUser(name: String!, email: String!, image: String!): User!
+}
