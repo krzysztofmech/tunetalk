@@ -68,8 +68,10 @@ const main = async () => {
   );
 
   await new Promise<void>((resolve) =>
-    httpServer.listen({ port: process.env.PORT }, resolve)
+    httpServer.listen({ port: process.env.PORT || 4000 }, resolve)
   );
+
+  console.log(`🚀 Server ready at port${process.env.PORT}`);
 };
 
 main();
