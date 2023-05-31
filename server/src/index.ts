@@ -31,7 +31,6 @@ const main = async () => {
   const server = new ApolloServer<BaseContext>({
     typeDefs,
     resolvers,
-    introspection: process.env.NODE_ENV === "production" ?? false,
   });
 
   const { url } = await startStandaloneServer(server, {
