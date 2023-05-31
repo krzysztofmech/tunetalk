@@ -37,11 +37,9 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({}) => {
         }}
       >
         {options.map(({ icon, text }) => (
-          <>
-            <IconButton color="primary" size="large">
-              <Icon component={icon!} />
-            </IconButton>
-          </>
+          <IconButton key={text} color="primary" size="large">
+            <Icon component={icon!} />
+          </IconButton>
         ))}
       </Box>
     </>

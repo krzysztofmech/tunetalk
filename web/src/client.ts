@@ -18,7 +18,7 @@ const authLink = setContext(async (req, context) => {
 });
 export const { getClient } = registerApolloClient(() => {
   const link = new HttpLink({
-    uri: "http://localhost:4000/graphql",
+    uri: process.env.APOLLO_SERVER,
     fetch: crossFetch,
   });
   return new ApolloClient({

@@ -1,13 +1,9 @@
-import { ApolloServer } from "@apollo/server";
-import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-import { expressMiddleware } from "@apollo/server/express4";
+import { ApolloServer, BaseContext } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
 import SpotifyApi from "./data-sources/spotify";
 import { promises } from "fs";
 import { resolvers } from "./resolvers";
-import express, { Request, Response } from "express";
-import http from "http";
-import cors from "cors";
-import { json } from "body-parser";
+import { Request, Response } from "express";
 import { config } from "dotenv";
 import path from "path";
 config({ path: `.env.${process.env.NODE_ENV}` });
@@ -22,10 +18,6 @@ export interface MyContext {
 }
 
 const main = async () => {
-  const app = express();
-
-  const httpServer = http.createServer(app);
-
   const schemaDir = `./src/schema/`;
   const schema = await promises.readdir(schemaDir);
 
@@ -36,42 +28,27 @@ const main = async () => {
     })
   );
 
-  const server = new ApolloServer<MyContext>({
+  const server = new ApolloServer<BaseContext>({
     typeDefs,
     resolvers,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
 
-  await server.start();
+  const { url } = await startStandaloneServer(server, {
+    listen: { port: Number(process.env.PORT) || 4000 },
+    context: async ({ res, req }) => {
+      const token = req.headers.authorization || "";
+      return {
+        dataSources: {
+          spotifyApi: new SpotifyApi(),
+        },
+        res,
+        req,
+        token,
+      };
+    },
+  });
 
-  app.use(
-    "/graphql",
-    cors<cors.CorsRequest>({
-      origin: ["http://localhost:3000"],
-      credentials: true,
-    }),
-    json(),
-    expressMiddleware(server, {
-      context: async ({ res, req }) => {
-        const token = req.headers.authorization || "";
-
-        return {
-          dataSources: {
-            spotifyApi: new SpotifyApi(),
-          },
-          res,
-          req,
-          token,
-        };
-      },
-    })
-  );
-
-  await new Promise<void>((resolve) =>
-    httpServer.listen({ port: process.env.PORT || 4000 }, resolve)
-  );
-
-  console.log(`🚀 Server ready at port${process.env.PORT}`);
+  console.log(`🚀 Server ready at ${url}`);
 };
 
 main();
