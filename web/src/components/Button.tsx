@@ -13,7 +13,7 @@ export const Button: React.FC<ButtonProps> = ({
   handleClick,
 }) => {
   return (
-    <MuiButton color="primary" variant={variant} onClick={handleClick}>
+    <MuiButton color="secondary" variant={variant} onClick={handleClick}>
       {text}
     </MuiButton>
   );

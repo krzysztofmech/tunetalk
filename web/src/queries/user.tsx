@@ -16,12 +16,19 @@ export const user = graphql(`
 export const me = graphql(`
   query Me {
     me {
-      id
-      name
-      createdAt
-      updatedAt
-      image
+      display_name
       email
+      followers {
+        total
+      }
+      href
+      id
+      images {
+        url
+      }
+      product
+      type
+      uri
     }
   }
 `);

@@ -2,7 +2,6 @@ import AuthContext from "../providers/AuthProvider";
 import StyledJsxRegistry from "./registry";
 import ThemeProvider from "../providers/ThemeProvider";
 import "./global.css";
-import ApolloClientProvider from "@/providers/ApolloClientProvider";
 
 export default function RootLayout({
   children,
@@ -13,11 +12,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <AuthContext>
-          <ApolloClientProvider>
-            <StyledJsxRegistry>
-              <ThemeProvider>{children}</ThemeProvider>
-            </StyledJsxRegistry>
-          </ApolloClientProvider>
+          <StyledJsxRegistry>
+            <ThemeProvider>{children}</ThemeProvider>
+          </StyledJsxRegistry>
         </AuthContext>
       </body>
     </html>

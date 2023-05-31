@@ -1,11 +1,13 @@
 import { generateRandomString } from "@/utils/generateRandomString";
-import NextAuth, { CookiesOptions, User } from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import SpotifyProvider from "next-auth/providers/spotify";
 import { clientId, redirectUri, scope, clientSecret } from "@/constants/auth";
+import { NextApiRequest, NextApiResponse } from "next";
 
 const state = generateRandomString(16);
 
-const handler = NextAuth({
+export const authOptions: AuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     SpotifyProvider({
       clientId: clientId!,
@@ -20,23 +22,26 @@ const handler = NextAuth({
       },
     }),
   ],
-  session: {
-    strategy: "jwt",
-  },
+
   callbacks: {
     async jwt({ token, account }) {
       // Persist the OAuth access_token to the token right after signin
-      if (account) {
+      if (account && account.access_token) {
         token.accessToken = account.access_token;
       }
       return token;
     },
-    async session({ session, token, user }) {
-      // Send properties to the client, like an access_token from a provider.
-      session.accessToken = token.accessToken;
+    async session({ session, token }) {
+      session.accessToken = token;
       return session;
     },
   },
-});
+};
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  return await NextAuth(req, res, authOptions);
+}
 
 export { handler as GET, handler as POST };

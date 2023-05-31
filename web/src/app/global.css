@@ -6,7 +6,6 @@
 body {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   background-color: #eea4bb;
 }

@@ -1,22 +1,28 @@
-import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
+import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+import { registerApolloClient } from "@apollo/experimental-nextjs-app-support/rsc";
 import { setContext } from "@apollo/client/link/context";
-import { getSession } from "next-auth/react";
-const link = createHttpLink({
-  uri: "http://localhost:4000/graphql",
-});
+import crossFetch from "cross-fetch";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "./app/api/auth/[...nextauth]/route";
 
-const authLink = setContext(async (_, { headers }) => {
-  const token = await getSession();
+const authLink = setContext(async (req, context) => {
+  const session = await getServerSession(authOptions);
+  const accessToken = session?.accessToken.accessToken;
 
   return {
     headers: {
-      ...headers,
-      authorization: token?.accessToken ? `Bearer ${token?.accessToken}` : "",
+      ...context.headers,
+      authorization: accessToken ? "Bearer " + accessToken : "",
     },
   };
 });
-export const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
-  cache: new InMemoryCache(),
-  link: authLink.concat(link),
+export const { getClient } = registerApolloClient(() => {
+  const link = new HttpLink({
+    uri: "http://localhost:4000/graphql",
+    fetch: crossFetch,
+  });
+  return new ApolloClient({
+    cache: new InMemoryCache(),
+    link: authLink.concat(link),
+  });
 });
