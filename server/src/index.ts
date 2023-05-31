@@ -10,7 +10,7 @@ import cors from "cors";
 import { json } from "body-parser";
 import { config } from "dotenv";
 import path from "path";
-config();
+config({ path: `.env.${process.env.NODE_ENV}` });
 
 export interface MyContext {
   dataSources: {
@@ -70,7 +70,6 @@ const main = async () => {
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: 4000 }, resolve)
   );
-  console.log(`🚀 Server ready at http://localhost:4000/graphql`);
 };
 
 main();

@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node dist/index.js",
     "watch": "tsc -w",
-    "dev": "nodemon dist/index.js",
+    "dev": "NODE_ENV=development nodemon dist/index.js",
     "migrate": "npx prisma migrate dev --name init",
     "codegen": "graphql-codegen --config codegen.yml"
   },
@@ -28,13 +29,14 @@
     "@types/node": "^20.1.4",
     "dotenv": "^16.0.3",
     "nodemon": "^2.0.22",
-    "prisma": "^4.14.0",
+    "prisma": "^4.15.0",
     "typescript": "^5.0.4"
   },
   "dependencies": {
     "@apollo/datasource-rest": "^6.0.0",
     "@apollo/server": "^4.7.1",
-    "@prisma/client": "^4.14.0",
+    "@prisma/client": "^4.15.0",
+    "@vercel/postgres": "^0.3.0",
     "graphql": "^16.6.0",
     "graphql-scalars": "^1.22.0",
     "pg": "^8.10.0"
