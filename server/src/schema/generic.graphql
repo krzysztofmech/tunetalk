@@ -1,0 +1,23 @@
+type ExternalUrl {
+  spotify: String
+}
+
+type Image {
+  width: Int
+  height: Int
+  url: String
+}
+type Restriction {
+  reason: String
+}
+
+type Copyright {
+  text: String
+  type: String
+}
+
+type ExternalId {
+  isrc: String
+  ean: String
+  upc: String
+}

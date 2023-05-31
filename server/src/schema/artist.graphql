@@ -1,0 +1,12 @@
+type Artist {
+  external_urls: ExternalUrl
+  followers: Follower
+  genres: [String]
+  href: String
+  id: String
+  images: [Image]
+  name: String
+  popularity: Int
+  type: String
+  uri: String
+}

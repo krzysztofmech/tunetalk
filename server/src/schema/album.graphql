@@ -1,0 +1,21 @@
+type Album {
+  album_type: String
+  total_tracks: Int
+  available_markets: [String]
+  external_urls: ExternalUrl
+  href: String
+  id: String
+  images: [Image]
+  name: String
+  release_date: String
+  release_date_precision: String
+  type: String
+  uri: String
+  copyrights: Copyright
+  external_ids: ExternalId
+  genres: [String]
+  label: String
+  artists: [Artist]
+  popularity: Int
+  album_group: String
+}

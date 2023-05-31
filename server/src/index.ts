@@ -18,6 +18,7 @@ export interface MyContext {
   };
   res: Response;
   req: Request;
+  token: string;
 }
 
 const main = async () => {
@@ -47,16 +48,20 @@ const main = async () => {
     "/graphql",
     cors<cors.CorsRequest>({
       origin: ["http://localhost:3000"],
+      credentials: true,
     }),
     json(),
     expressMiddleware(server, {
       context: async ({ res, req }) => {
+        const token = req.headers.authorization || "";
+
         return {
           dataSources: {
             spotifyApi: new SpotifyApi(),
           },
           res,
           req,
+          token,
         };
       },
     })

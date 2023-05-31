@@ -1,8 +1,9 @@
 import { Resolvers } from "../generated/resolvers-types";
-import { queries } from "./queries";
-import { mutations } from "./mutations";
+import { userQueries } from "./queries/user";
+import { userMutations } from "./mutations/user";
+import { trackQueries } from "./queries/track";
 
 export const resolvers: Resolvers = {
-  Query: { ...queries },
-  Mutation: { ...mutations },
+  Query: { ...userQueries, ...trackQueries },
+  Mutation: { ...userMutations },
 };

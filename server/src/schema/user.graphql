@@ -9,8 +9,38 @@ type User {
   updatedAt: Date
 }
 
+type ExplicitContent {
+  filter_enabled: Boolean
+  filter_locked: Boolean
+}
+
+type Follower {
+  href: String
+  total: Int
+}
+
+type Image {
+  height: Int
+  url: String
+  width: Int
+}
+
+type SpotifyUser {
+  country: String
+  display_name: String
+  email: String
+  explicit_content: ExplicitContent
+  followers: Follower
+  href: String
+  id: String
+  images: [Image]
+  product: String
+  type: String
+  uri: String
+}
+
 type Query {
-  me: User
+  me: SpotifyUser
   user(id: Int!): User
 }
 
