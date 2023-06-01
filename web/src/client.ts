@@ -3,7 +3,7 @@ import { registerApolloClient } from "@apollo/experimental-nextjs-app-support/rs
 import { setContext } from "@apollo/client/link/context";
 import crossFetch from "cross-fetch";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "./app/api/auth/[...nextauth]/route";
+import { authOptions } from "./app/api/auth/[...nextauth]/authOptions";
 
 const authLink = setContext(async (req, context) => {
   const session = await getServerSession(authOptions);

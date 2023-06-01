@@ -19,17 +19,6 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({}) => {
   ];
   return (
     <>
-      <Menu options={options}>
-        <IconButton
-          color="primary"
-          size="large"
-          sx={{
-            display: { xs: "block", md: "none" },
-          }}
-        >
-          <MoreVert />
-        </IconButton>
-      </Menu>
       <Box
         marginRight={10}
         sx={{

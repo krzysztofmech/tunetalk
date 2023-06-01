@@ -69,7 +69,7 @@ export const Header: React.FC<HeaderProps> = ({ user }) => {
           </Typography>
 
           <NavigationButtons />
-          {!!user.images && !!user.images[0] && (
+          {!!user && !!user.images && !!user.images[0] && (
             <>
               <Menu options={settings}>
                 <Tooltip title={user.display_name} placement="top">
