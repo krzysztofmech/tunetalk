@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getClient } from "@/client";
 import { me } from "@/queries/user";
 import { Header } from "./components/Header";
