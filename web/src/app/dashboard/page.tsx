@@ -1,7 +1,9 @@
-import React from "react";
+import { MiddleSection } from "./components/middle-section/MiddleSection";
 
-interface PageProps {}
-
-export default async function Page() {
-  return <>dashboard</>;
+export default async function Dashboard() {
+  return (
+    <div className="flex justify-center w-full h-full">
+      <MiddleSection />
+    </div>
+  );
 }
