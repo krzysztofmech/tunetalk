@@ -1,5 +1,5 @@
 # tunetalk
-### Real-time application providing chat communication with the other users while listening to streamed music.
+### Real-time application providing chat communication with other users while listening to streamed music.
 This is an ongoing project and some features might change/be replaced in the future.
 <br/>
 The project is being created for learning purposes with the assumption of bringing real value for the users.
