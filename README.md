@@ -26,13 +26,7 @@ The project is being created for learning purposes with the assumption of bringi
 </ul>
 
 # Tech-stack
-<ul>
-  <li>TypeScript</li>
-  <li>Next.js 13</li>
-  <li>Apollo</li>
-  <li>PostgresQL</li>
-  <li>TailwindCSS</li>
-</ul>
+The tech-stack is being discussed and will be updated soon.
 
 # Design 
 https://www.figma.com/file/u1kOyfbCF6T0ACkIO5PCIM/tunetalk?type=design&node-id=302%3A10334&mode=design&t=hzenu3waBcBB9Ans-1
