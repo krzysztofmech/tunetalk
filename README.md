@@ -4,7 +4,7 @@ The goal of the this project is to create a place where small artists can promot
 and for other people to connect and build a community around it.
 
 This is an ongoing project and some features might change/be replaced in the future but the goal remains the same.
-# App Core Components
+## App Core Components
 ### User Profile
 <ul>
     <li>User info such as username, email, profile picture</li>
@@ -35,8 +35,9 @@ This is an ongoing project and some features might change/be replaced in the fut
     <li>Send timestamp to a user</li>
 </ul>
 
-# Tech-stack
+## Tech-stack
 The tech-stack is being discussed and will be updated soon.
 
-# Design 
+## Design
+Will change color palette
 https://www.figma.com/file/u1kOyfbCF6T0ACkIO5PCIM/tunetalk?type=design&node-id=302%3A10334&mode=design&t=hzenu3waBcBB9Ans-1
