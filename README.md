@@ -1,13 +1,10 @@
 # tunetalk
-### Real-time application to show your music and build community around it.
+### Real-time application to show off your music and build community around it.
 The goal of the this project is to create a place where small artists can promote their music
 and for other people to connect around it and build a community.
 
 This is an ongoing project and some features might change/be replaced in the future but the goal remains the same.
-<br/>
-The project is being created for learning purposes with the assumption of bringing real value for the users.
 # App Core Components
-
 ## User Profile
 <ul>
     <li>User info such as username, email, profile picture</li>
