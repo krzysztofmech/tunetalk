@@ -5,18 +5,18 @@ and for other people to connect around it and build a community.
 
 This is an ongoing project and some features might change/be replaced in the future but the goal remains the same.
 # App Core Components
-## User Profile
+### User Profile
 <ul>
     <li>User info such as username, email, profile picture</li>
     <li>Uploaded songs with attached licenses</li>
     <li>Friends list, and blocked users list</li>
 </ul>
-## Main Dashboard
+### Main Dashboard
 <ul>
     <li>List of rooms with genres and number of listeners</li>
     <li>Ability to join the room</li>
 </ul>
-## Room View
+### Room View
 <ul>
     <li>Room chat and private chat</li>
     <li>Listen to music live or individually</li>
@@ -24,7 +24,7 @@ This is an ongoing project and some features might change/be replaced in the fut
     <li>Block/Unblock chatters</li>
     <li>Add friends</li>
 </ul>
-## Song Queue View
+### Song Queue View
 <ul>
     <li>Current song display</li>
     <li>Seekbar</li>
