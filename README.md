@@ -39,5 +39,5 @@ This is an ongoing project and some features might change/be replaced in the fut
 The tech-stack is being discussed and will be updated soon.
 
 ## Design
-Will change color palette
+Color palette will change
 https://www.figma.com/file/u1kOyfbCF6T0ACkIO5PCIM/tunetalk?type=design&node-id=302%3A10334&mode=design&t=hzenu3waBcBB9Ans-1
