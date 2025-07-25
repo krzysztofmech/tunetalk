@@ -21,7 +21,7 @@
   --color-white-transparent: rgba(255, 255, 255, 0.5);
 
   /* status colors */
-  --color-alert: #F04248;
+  --color-alert: #A72608;
 }
 
 @theme inline {
@@ -38,6 +38,18 @@
 
 body {
   background: var(--background);
-  color: var(--foreground);
+  color: var(--color-white);
   font-family: var(--font-sans);
+  letter-spacing: -0.02rem;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: white !important;
+  color: white !important;
+  caret-color: white !important;
+  background-color: white !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
