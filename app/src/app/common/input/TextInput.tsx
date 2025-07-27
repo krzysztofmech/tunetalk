@@ -1,6 +1,20 @@
 import { FC, InputHTMLAttributes } from 'react';
 import { DynamicIcon, IconName } from 'lucide-react/dynamic';
-import { useFieldContext } from '@/app/form';
+import { useField, useFieldContext } from '@/app/form';
+import { cn } from '@/app/utils/cn';
+
+const textInputStyles = {
+  main: 'peer rounded-md px-5 py-3 text-sm font-bold text-white placeholder:text-main-background-lighter transition-colors duration-100 focus:outline-none',
+  default: {
+    noError:
+      'border-1 border-main-background-lighter focus:border-orange hover:border-white',
+    hasError: 'border-1 border-alert',
+  },
+  borderless: {
+    noError: 'ring-0 hover:bg-main-background-lighter',
+    hasError: 'text-alert',
+  },
+};
 
 interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   type?: 'text' | 'email' | 'password';
@@ -19,9 +33,18 @@ export const TextInput: FC<TextInputProps> = ({
   icon,
   disabled,
 }) => {
-  const { name, state, handleChange, handleBlur } = useFieldContext<string>();
+  const { errorMessages, state, name, handleChange, handleBlur } =
+    useField<string>();
 
   const hasError = !state.meta.isValid && state.meta.isTouched;
+
+  const textInputClasses = cn(
+    textInputStyles.main,
+    borderless
+      ? textInputStyles.borderless[hasError ? 'hasError' : 'noError']
+      : textInputStyles.default[hasError ? 'hasError' : 'noError'],
+    icon ? 'pr-13' : '',
+  );
 
   return (
     <>
@@ -37,10 +60,9 @@ export const TextInput: FC<TextInputProps> = ({
               }`}
             >
               <span
-                className="text-alert mt-1 flex items-center pl-5 text-sm
-                  font-bold"
+                className="text-alert mt-1 flex items-center text-sm font-bold"
               >
-                {hasError && state.meta.errors[0].message}
+                {errorMessages[0]}
               </span>
             </div>
           </div>
@@ -53,18 +75,7 @@ export const TextInput: FC<TextInputProps> = ({
               type={type}
               placeholder={placeholder}
               disabled={disabled}
-              className={`${
-                borderless
-                  ? 'hover:bg-main-background-lighter ring-0'
-                  : 'ring-1'
-                } ${
-                hasError
-                  ? 'ring-alert'
-                  : `ring-main-background-lighter focus:ring-orange
-                    hover:border-white`
-                } ${icon ? 'pr-13' : ''} peer rounded-md px-5 py-3 text-sm
-                font-bold text-white transition-colors duration-100
-                focus:outline-none`}
+              className={textInputClasses}
             />
             {icon && (
               <div
@@ -74,7 +85,7 @@ export const TextInput: FC<TextInputProps> = ({
                 <DynamicIcon
                   name={icon}
                   size={16}
-                  className={`${hasError ? 'text-alert' : 'text-white'} `}
+                  className="text-white"
                 />
               </div>
             )}
@@ -82,8 +93,7 @@ export const TextInput: FC<TextInputProps> = ({
           {label && (
             <label
               htmlFor={name}
-              className={`${hasError ? 'text-alert' : 'peer-focus:text-orange text-white'}
-              pl-5 text-sm font-bold transition-colors duration-100`}
+              className={`text-sm font-bold transition-colors duration-100 peer-focus:text-orange text-white`}
             >
               {label}
             </label>
