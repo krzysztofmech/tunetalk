@@ -4,6 +4,9 @@
     "prettier-plugin-classnames",
     "prettier-plugin-merge"
   ],
+  "tailwindFunctions": [
+    "cva"
+  ],
   "singleQuote": true,
   "jsxSingleQuote": false,
   "semicolons": false
