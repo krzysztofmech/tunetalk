@@ -15,6 +15,7 @@ const styles = {
     default: 'h-10 px-4 py-2',
     sm: 'h-8 px-3 rounded-md',
     lg: 'h-11 px-8 rounded-md',
+    link: 'p-0 m-0 bg-transparent',
   },
   variants: {
     filled:
@@ -28,27 +29,31 @@ const styles = {
   },
 };
 
+type Variant = keyof typeof styles.variants;
+type Size = keyof typeof styles.sizes;
+
 interface ClickButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   buttonType: 'click';
   onClick: (e: MouseEvent<HTMLButtonElement>) => void;
   loading?: boolean;
-  size?: keyof typeof styles.sizes;
-  variant?: keyof typeof styles.variants;
+  size?: Size;
+  variant?: Variant;
   icon?: IconName;
 }
 
-interface SubmitButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface SubmitButtonProps
+  extends ButtonHTMLAttributes<HTMLButtonElement> {
   buttonType: 'submit';
   loading?: boolean;
-  size?: keyof typeof styles.sizes;
-  variant?: keyof typeof styles.variants;
+  size?: Size;
+  variant?: Variant;
 }
 
 interface LinkButtonProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   buttonType: 'link';
   href: string;
-  size?: keyof typeof styles.sizes;
-  variant?: keyof typeof styles.variants;
+  variant: 'linkDefault' | 'linkWhite';
+  size?: Size;
   external?: boolean;
 }
 
@@ -59,22 +64,25 @@ export const Button: FC<ButtonProps> = ({
   size = 'default',
   variant = 'filled',
   children,
+  className,
   ...props
 }) => {
   const classes = cn(
     styles.default,
     styles.sizes[size],
     styles.variants[variant],
+    className,
   );
 
   if (buttonType === 'link') {
     const { href, external, ...rest } = props as LinkButtonProps;
+    const linkClasses = cn(classes, styles.sizes['link']);
 
     if (external) {
       return (
         <a
           href={href}
-          className={classes}
+          className={linkClasses}
           target="_blank"
           rel="nooperner noreferrer"
           {...rest}
@@ -84,7 +92,7 @@ export const Button: FC<ButtonProps> = ({
       );
     }
     return (
-      <Link href={href} className={classes} {...rest}>
+      <Link href={href} className={linkClasses} {...rest}>
         {children}
       </Link>
     );
@@ -114,7 +122,7 @@ export const Button: FC<ButtonProps> = ({
 
   return (
     <button
-      className={cn(classes, icon ? 'p-0 h-10 w-10' : '')}
+      className={cn(classes, icon ? 'h-10 w-10 p-0' : '')}
       type="button"
       disabled={loading || disabled}
       onClick={onClick}

@@ -1,14 +1,14 @@
 import { FC, InputHTMLAttributes } from 'react';
 import { DynamicIcon, IconName } from 'lucide-react/dynamic';
-import { useField, useFieldContext } from '@/app/form';
+import { useField } from '@/app/form';
 import { cn } from '@/app/utils/cn';
 
 const textInputStyles = {
-  main: 'peer rounded-md px-5 py-3 text-sm font-bold text-white placeholder:text-main-background-lighter transition-colors duration-100 focus:outline-none',
+  main: 'appearance-none outline-none peer rounded-md px-5 py-5 text-sm font-bold text-white placeholder:text-main-background-lighter transition-all duration-100 focus:outline-none w-full',
   default: {
     noError:
-      'border-1 border-main-background-lighter focus:border-orange hover:border-white',
-    hasError: 'border-1 border-alert',
+      'ring-1 ring-main-background-lighter focus:ring-orange hover:ring-white',
+    hasError: 'ring-1 ring-alert',
   },
   borderless: {
     noError: 'ring-0 hover:bg-main-background-lighter',
@@ -48,8 +48,8 @@ export const TextInput: FC<TextInputProps> = ({
 
   return (
     <>
-      <div className={'flex items-center justify-center'}>
-        <div className="flex flex-col-reverse items-start gap-2">
+      <div className={'flex w-full items-center'}>
+        <div className="flex w-full flex-col-reverse items-start gap-2">
           <div
             className={`overflow-hidden transition-all duration-100 ease-in-out
               ${hasError ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'}`}
@@ -60,13 +60,14 @@ export const TextInput: FC<TextInputProps> = ({
               }`}
             >
               <span
-                className="text-alert mt-1 flex items-center text-sm font-bold"
+                className="text-alert mt-1 flex items-center px-5 text-sm
+                  font-bold"
               >
                 {errorMessages[0]}
               </span>
             </div>
           </div>
-          <div className="relative">
+          <div className="relative w-full">
             <input
               value={state.value}
               onChange={(e) => handleChange(e.target.value)}
@@ -82,18 +83,15 @@ export const TextInput: FC<TextInputProps> = ({
                 className="pointer-events-none absolute top-1/2 right-3
                   -translate-1/2 transform"
               >
-                <DynamicIcon
-                  name={icon}
-                  size={16}
-                  className="text-white"
-                />
+                <DynamicIcon name={icon} size={16} className="text-white" />
               </div>
             )}
           </div>
           {label && (
             <label
               htmlFor={name}
-              className={`text-sm font-bold transition-colors duration-100 peer-focus:text-orange text-white`}
+              className={`peer-focus:text-orange px-5 text-sm font-bold
+              text-white transition-colors duration-100`}
             >
               {label}
             </label>

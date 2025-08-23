@@ -1,6 +1,7 @@
 import { createFormHook, createFormHookContexts } from '@tanstack/react-form';
-import { TextInput } from '@/app/common/input/TextInput';
 import { ZodError } from 'zod';
+import { TextInput } from '@/app/common/input/TextInput';
+import { FormButton } from '../common/button/FormButton';
 
 type Errors = (ZodError | string)[];
 
@@ -21,7 +22,9 @@ export const { useAppForm } = createFormHook({
   fieldComponents: {
     TextInput,
   },
-  formComponents: {},
+  formComponents: {
+    FormButton,
+  },
   fieldContext,
   formContext,
 });
