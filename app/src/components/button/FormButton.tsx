@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Button, SubmitButtonProps } from './Button';
-import { useFormContext } from '@/app/form';
+import { useFormContext } from '@/form';
 
 interface FormButtonProps extends Omit<SubmitButtonProps, 'buttonType'> {}
 

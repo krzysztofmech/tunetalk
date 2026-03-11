@@ -1,4 +1,4 @@
-import { cn } from '@/app/utils/cn';
+import { cn } from '@/utils/cn';
 import { DynamicIcon, IconName } from 'lucide-react/dynamic';
 import Link from 'next/link';
 import {
@@ -6,6 +6,7 @@ import {
   ButtonHTMLAttributes,
   FC,
   MouseEvent,
+  ReactNode,
 } from 'react';
 
 const styles = {
@@ -57,12 +58,14 @@ interface LinkButtonProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   external?: boolean;
 }
 
-type ButtonProps = ClickButtonProps | SubmitButtonProps | LinkButtonProps;
+type ButtonProps = (ClickButtonProps | SubmitButtonProps | LinkButtonProps) & {
+  children?: ReactNode;
+};
 
 export const Button: FC<ButtonProps> = ({
-  buttonType = 'click',
   size = 'default',
   variant = 'filled',
+  buttonType,
   children,
   className,
   ...props

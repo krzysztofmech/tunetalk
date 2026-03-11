@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"tunetalk/util"
 )
@@ -14,11 +15,14 @@ func InitDB() error {
 	password := util.GetEnv("DATABASE_PASSWORD", "mysql")
 	host := util.GetEnv("DATABASE_HOST", "localhost")
 	port := util.GetEnv("DATABASE_PORT", "3306")
+	name := util.GetEnv("DATABASE_NAME", "tunetalk")
 
 	dsn := fmt.Sprintf(
-		"%s:%s@tcp(%s:%s)/gym",
-		user, password, host, port,
+		"%s:%s@tcp(%s:%s)/%s",
+		user, password, host, port, name,
 	)
+
+	fmt.Printf(dsn)
 
 	var err error
 	db, err = sql.Open("mysql", dsn)
@@ -31,6 +35,7 @@ func InitDB() error {
 	}
 
 	log.Println("Database connected successfully")
+
 	return nil
 }
 
@@ -44,4 +49,3 @@ func CloseDB() error {
 func GetDB() *sql.DB {
 	return db
 }
-

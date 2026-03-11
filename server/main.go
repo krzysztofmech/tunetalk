@@ -6,8 +6,9 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"tunetalk/db"
-	"tunetalk/db/migrations"
+	"tunetalk/internal/db"
+	"tunetalk/internal/db/migrations"
+	"tunetalk/internal/ws"
 	"tunetalk/router"
 
 	"github.com/joho/godotenv"
@@ -44,11 +45,16 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "3000"
+		port = "8080"
 	}
 
 	log.Printf("Server starting on port %s", port)
-	router := router.SetupRouter()
+
+	wsService := ws.NewCore()
+
+	router := router.SetupRouter(wsService)
+
+	go wsService.Run()
 
 	err := http.ListenAndServe(":"+port, router)
 	if err != nil {
