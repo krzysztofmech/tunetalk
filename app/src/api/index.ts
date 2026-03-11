@@ -1,0 +1,1 @@
+export { getRooms } from './rooms'

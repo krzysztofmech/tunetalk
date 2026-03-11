@@ -1,7 +1,7 @@
+import { FormButton } from '@/components/button/FormButton';
+import { TextInput } from '@/components/input/TextInput';
 import { createFormHook, createFormHookContexts } from '@tanstack/react-form';
 import { ZodError } from 'zod';
-import { TextInput } from '@/app/common/input/TextInput';
-import { FormButton } from '../common/button/FormButton';
 
 type Errors = (ZodError | string)[];
 

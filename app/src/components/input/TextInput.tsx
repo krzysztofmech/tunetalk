@@ -1,7 +1,7 @@
 import { FC, InputHTMLAttributes } from 'react';
 import { DynamicIcon, IconName } from 'lucide-react/dynamic';
-import { useField } from '@/app/form';
-import { cn } from '@/app/utils/cn';
+import { useField } from '@/form';
+import { cn } from '@/utils/cn';
 
 const textInputStyles = {
   main: 'appearance-none outline-none peer rounded-md px-5 py-5 text-sm font-bold text-white placeholder:text-main-background-lighter transition-all duration-100 focus:outline-none w-full',
