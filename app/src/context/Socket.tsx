@@ -20,7 +20,7 @@ const SocketContext = createContext<SocketContextValue | null>(null);
 
 export const Socket: React.FC<SocketProps> = ({ children }) => {
   const socket = useRef<any | null>(null);
-  const url = process.env.WS_URL || 'ws://localhost:8080';
+  const url = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080';
   const [isConnected, setIsConnected] = useState(false);
 
   const connect = (username: string, userId: string, roomId: string) => {

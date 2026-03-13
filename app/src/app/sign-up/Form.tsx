@@ -1,8 +1,8 @@
 'use client';
 import { FC } from 'react';
-import { useAppForm } from '../form';
 import { formOpts } from './form-options';
-import { Button } from '../common/button/Button';
+import { useAppForm } from '@/form';
+import { Button } from '@/components/button/Button';
 
 export const Form: FC = () => {
   const { AppField, handleSubmit, AppForm, FormButton } = useAppForm(formOpts);
