@@ -7,6 +7,10 @@ RUN pnpm i;
 
 # Application build stage
 FROM node:25-alpine3.22 AS app-builder 
+ARG API_URL
+ARG WS_URL
+ENV NEXT_PUBLIC_API_URL=${API_URL}
+ENV NEXT_PUBLIC_WS_URL=${WS_URL}
 WORKDIR /app
 COPY --from=app-deps /app/node_modules ./node_modules
 COPY . .
