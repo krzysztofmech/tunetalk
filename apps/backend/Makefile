@@ -2,7 +2,7 @@
 
 # Build the application
 build:
-	go build -o bin/server cmd/app/main.go
+	go build -o bin/server main.go
 
 # Run the application
 run: build
