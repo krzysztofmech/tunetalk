@@ -32,6 +32,14 @@ services:
     depends_on: [tunetalk-db]
     ports: [8080:8080]
     networks: [tunetalk-network]
+  tunetalk-frontend:
+    build:
+      context: ../apps/frontend
+    restart: always
+    ports: [3000:3000]
+    environment:
+      BACKEND_API_URL: http://localhost:8080
+    depends_on: [tunetalk-backend]
 volumes:
   tunetalk-db-data:
 networks:

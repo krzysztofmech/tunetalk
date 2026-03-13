@@ -1,0 +1,23 @@
+# Application dependencies stage
+FROM node:25-alpine3.22 AS app-deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci;
+
+# Application build stage
+FROM node:25-alpine3.22 AS app-builder 
+WORKDIR /app
+COPY --from=app-deps /app/node_modules ./node_modules
+COPY . .
+RUN npm run build;
+
+# Application runtime
+FROM node:25-alpine3.22
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=app-builder /app/.next ./.next
+COPY --from=app-builder /app/public ./public
+COPY --from=app-deps /app/package.json ./package.json
+COPY --from=app-deps /app/node_modules ./node_modules
+EXPOSE 3000
+CMD ["npm", "run", "start"]
