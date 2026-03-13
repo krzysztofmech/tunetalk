@@ -1,15 +1,17 @@
 # Application dependencies stage
 FROM node:25-alpine3.22 AS app-deps
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci;
+COPY package.json pnpm-lock.yaml ./
+RUN npm install -g pnpm@latest-10;
+RUN pnpm i;
 
 # Application build stage
 FROM node:25-alpine3.22 AS app-builder 
 WORKDIR /app
 COPY --from=app-deps /app/node_modules ./node_modules
 COPY . .
-RUN npm run build;
+RUN npm install -g pnpm@latest-10;
+RUN pnpm run build;
 
 # Application runtime
 FROM node:25-alpine3.22
