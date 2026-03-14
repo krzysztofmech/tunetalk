@@ -1,0 +1,47 @@
+---
+version: '3.9'
+services:
+  tunetalk-db:
+    image: mysql:9.6.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: tunetalk-test-db
+      MYSQL_USER: tunetalk
+      MYSQL_PASSWORD: tunetalk-password
+    healthcheck:
+      test: [CMD, mysqladmin, ping, -h, localhost]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes: [tunetalk-db-data:/var/lib/mysql]
+    ports: [3306:3306]
+    networks: [tunetalk-network]
+  tunetalk-backend:
+    build:
+      context: ../apps/backend
+    restart: always
+    environment:
+      DATABASE_HOST: tunetalk-db
+      DATABASE_NAME: tunetalk-test-db
+      DATABASE_PORT: 3306
+      DATABASE_USER: tunetalk
+      DATABASE_PASSWORD: tunetalk-password
+    depends_on: [tunetalk-db]
+    ports: [8080:8080]
+    networks: [tunetalk-network]
+  tunetalk-frontend:
+    build:
+      context: ../apps/frontend
+      args:
+        API_URL: http://localhost:8080
+        WS_URL: ws://localhost:8080
+    restart: always
+    depends_on: [tunetalk-backend]
+    ports: [3000:3000]
+    networks: [tunetalk-network]
+volumes:
+  tunetalk-db-data:
+networks:
+  tunetalk-network:
+    driver: bridge
