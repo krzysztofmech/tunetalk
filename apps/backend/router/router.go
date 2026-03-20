@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"tunetalk/internal/db"
-	"tunetalk/internal/generated"
 	"tunetalk/internal/handlers"
 	"tunetalk/internal/repositories"
 	"tunetalk/internal/ws"
@@ -16,7 +15,6 @@ import (
 
 func SetupRouter(wsService *ws.Core) *chi.Mux {
 	db := db.GetDB()
-	queries := generated.New(db)
 	r := chi.NewRouter()
 	r.Use(cors.AllowAll().Handler)
 
@@ -25,14 +23,16 @@ func SetupRouter(wsService *ws.Core) *chi.Mux {
 		w.Write([]byte("ok"))
 	})
 
-	roomsRepo := repositories.NewRoomsRepository(db, queries)
+	roomsRepo := repositories.NewRoomsRepository(db)
 	coreH := handlers.NewCoreHandler(wsService, roomsRepo)
 
 	// websocket route
 	r.Get("/ws", coreH.Connect)
 
-	r.Route("/rooms", func(r chi.Router) {
-		routes.CreateRoomsRoute(r, db, queries)
+	r.Route("/api", func(r chi.Router) {
+		r.Route("/rooms", func(r chi.Router) {
+			routes.CreateRoomsRoute(r, db)
+		})
 	})
 
 	log.Println("Router setup complete")

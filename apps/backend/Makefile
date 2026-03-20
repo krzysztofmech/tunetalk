@@ -31,5 +31,5 @@ deps:
 
 # Create migration
 create-migration:
-	cd db/migrations && \
+	cd internal/db/migrations && \
 		goose -s create $(name) sql
