@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"tunetalk/internal/db"
 	"tunetalk/internal/handlers"
+	"tunetalk/internal/middleware"
 	"tunetalk/internal/repositories"
 	"tunetalk/internal/ws"
 	"tunetalk/router/routes"
@@ -16,7 +17,15 @@ import (
 func SetupRouter(wsService *ws.Core) *chi.Mux {
 	db := db.GetDB()
 	r := chi.NewRouter()
-	r.Use(cors.AllowAll().Handler)
+
+	corsMiddleware := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:3000"},
+		AllowCredentials: true,
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"*"},
+	})
+
+	r.Use(corsMiddleware.Handler)
 
 	r.Get("/health", func(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -30,8 +39,14 @@ func SetupRouter(wsService *ws.Core) *chi.Mux {
 	r.Get("/ws", coreH.Connect)
 
 	r.Route("/api", func(r chi.Router) {
-		r.Route("/rooms", func(r chi.Router) {
-			routes.CreateRoomsRoute(r, db)
+		r.Group(func(r chi.Router) {
+			r.Use(middleware.Auth)
+			r.Route("/rooms", func(r chi.Router) {
+				routes.CreateRoomsRoute(r, db)
+			})
+		})
+		r.Route("/users", func(r chi.Router) {
+			routes.CreateUsersRoute(r, db)
 		})
 	})
 

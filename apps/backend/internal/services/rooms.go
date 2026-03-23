@@ -20,12 +20,12 @@ func (s *RoomsService) GetRooms(ctx context.Context) ([]models.Room, error) {
 	return s.repo.GetRooms(ctx)
 }
 
-func (s *RoomsService) GetRoomById(ctx context.Context, id string) (models.Room, error) {
+func (s *RoomsService) GetRoomById(ctx context.Context, id string) (models.RoomWithUser, error) {
 	return s.repo.GetRoomById(ctx, id)
 }
 
-func (s *RoomsService) CreateRoom(ctx context.Context, params repositories.CreateRoomParams) error {
-	return s.repo.CreateRoom(ctx, params)
+func (s *RoomsService) CreateRoom(ctx context.Context, name string, creatorID string) (models.Room, error) {
+	return s.repo.CreateRoom(ctx, name, creatorID)
 }
 
 func (s *RoomsService) UpdateRoom(ctx context.Context, params repositories.UpdateRoomParams, id string) error {

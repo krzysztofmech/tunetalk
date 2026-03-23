@@ -2,7 +2,7 @@
 import { FC } from 'react';
 import { formOpts } from './form-options';
 import { useAppForm } from '@/form';
-import { Button } from '@/components/button/Button';
+import { Button } from '@/components/ui/button/Button';
 
 export const Form: FC = () => {
   const { AppField, handleSubmit, AppForm, FormButton } = useAppForm(formOpts);

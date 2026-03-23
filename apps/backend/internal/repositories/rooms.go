@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
+	"log"
 	"tunetalk/internal/models"
 )
 
@@ -12,8 +14,7 @@ type RoomsRepository struct {
 }
 
 type CreateRoomParams struct {
-	Name      string `json:"name"`
-	CreatorID string `json:"creator_id"`
+	Name string `json:"name"`
 }
 
 type UpdateRoomParams struct {
@@ -55,22 +56,65 @@ func (r *RoomsRepository) GetRooms(ctx context.Context) ([]models.Room, error) {
 	return rooms, nil
 }
 
-func (r *RoomsRepository) GetRoomById(ctx context.Context, id string) (models.Room, error) {
-	const Query = `SELECT * FROM rooms WHERE id = ? LIMIT 1;`
+func (r *RoomsRepository) GetRoomById(ctx context.Context, id string) (models.RoomWithUser, error) {
+	const Query = `SELECT rooms.*, users.name AS creator_name FROM rooms INNER JOIN users ON rooms.creator_id = users.id WHERE rooms.id = ?`
 
 	row := r.db.QueryRowContext(ctx, Query, id)
 
-	var room models.Room
-	err := row.Scan(&room.ID, &room.Name, &room.CreatorID)
+	var room models.RoomWithUser
+	err := row.Scan(&room.ID, &room.Name, &room.CreatorID, &room.CreatorName)
 
 	return room, err
 }
 
-func (r *RoomsRepository) CreateRoom(ctx context.Context, params CreateRoomParams) error {
-	const Query = `INSERT INTO rooms (name, creator_id) VALUES(?, ?);`
+func (r *RoomsRepository) CreateRoom(ctx context.Context, name string, creatorID string) (models.Room, error) {
+	const CountQuery = `
+	SELECT COUNT(*) FROM rooms;
+	`
 
-	_, err := r.db.ExecContext(ctx, Query, params.Name, params.CreatorID)
-	return err
+	rows, err := r.db.Query(CountQuery)
+
+	if err != nil {
+		return models.Room{}, err
+	}
+	var count int
+
+	for rows.Next() {
+		if err := rows.Scan(&count); err != nil {
+			return models.Room{}, err
+		}
+	}
+
+	const InsertQuery = `
+	INSERT INTO rooms (name, creator_id)
+	VALUES(?, ?)
+	`
+
+	log.Printf("%s %s", name, creatorID)
+	room_name := fmt.Sprintf("%s's room #%v", name, count + 1)
+
+	res, err := r.db.ExecContext(ctx, InsertQuery, room_name, creatorID)
+
+	if err != nil {
+		return models.Room{}, err
+	}
+
+	id, err := res.LastInsertId()
+
+	if err != nil {
+		return models.Room{}, err
+	}
+
+	const SelectQuery = `
+	SELECT * FROM rooms WHERE id = ?;
+	`
+
+	row := r.db.QueryRowContext(ctx, SelectQuery, id)
+
+	var room models.Room
+	err = row.Scan(&room.ID, &room.Name, &room.CreatorID)
+
+	return room, err
 }
 
 func (r *RoomsRepository) UpdateRoom(ctx context.Context, params UpdateRoomParams, id string) error {
@@ -78,9 +122,12 @@ func (r *RoomsRepository) UpdateRoom(ctx context.Context, params UpdateRoomParam
 
 	res, err := r.db.ExecContext(ctx, Query, params.Name, id)
 
-	rowsAffected, err := res.RowsAffected()
-	if rowsAffected == 0 {
-		return errors.New("UpdateRoom - can't find room with the provided ID - no row has been updated")
+	if err != nil {
+		return err
+	}
+
+	if _, err := res.RowsAffected(); err != nil {
+		return errors.New("UpdateRoom - no row has been updated - can't find room with the provided ID")
 	}
 
 	return err
@@ -91,8 +138,11 @@ func (r *RoomsRepository) DeleteRoom(ctx context.Context, id string) error {
 
 	res, err := r.db.ExecContext(ctx, Query, id)
 
-	rowsAffected, err := res.RowsAffected()
-	if rowsAffected == 0 {
+	if err != nil {
+		return err
+	}
+
+	if _, err := res.RowsAffected(); err != nil {
 		return errors.New("DeleteRoom - can't find room with the provided ID - no row has been deleted")
 	}
 

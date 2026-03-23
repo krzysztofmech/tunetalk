@@ -1,17 +1,16 @@
 import { FC, InputHTMLAttributes } from 'react';
 import { DynamicIcon, IconName } from 'lucide-react/dynamic';
 import { useField } from '@/form';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils/cn';
 
 const textInputStyles = {
-  main: 'appearance-none outline-none peer rounded-md px-5 py-5 text-sm font-bold text-white placeholder:text-main-background-lighter transition-all duration-100 focus:outline-none w-full',
+  main: 'appearance-none outline-none peer rounded-md px-5 py-5 text-sm font-bold text-white placeholder:text-main-white transition-all duration-100 focus:outline-none w-full',
   default: {
-    noError:
-      'ring-1 ring-main-background-lighter focus:ring-orange hover:ring-white',
+    noError: 'ring-1 ring-main-white focus:ring-orange hover:ring-white',
     hasError: 'ring-1 ring-alert',
   },
   borderless: {
-    noError: 'ring-0 hover:bg-main-background-lighter',
+    noError: 'ring-0 hover:bg-main-background-less-transparent px-2',
     hasError: 'text-alert',
   },
 };
@@ -23,11 +22,13 @@ interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   icon?: IconName;
   disabled?: boolean;
+  smaller?: boolean;
 }
 
 export const TextInput: FC<TextInputProps> = ({
   type = 'text',
   borderless = false,
+  smaller = false,
   placeholder,
   label,
   icon,
@@ -44,6 +45,12 @@ export const TextInput: FC<TextInputProps> = ({
       ? textInputStyles.borderless[hasError ? 'hasError' : 'noError']
       : textInputStyles.default[hasError ? 'hasError' : 'noError'],
     icon ? 'pr-13' : '',
+    smaller ? 'py-3' : '',
+  );
+
+  const labelClasses = cn(
+    `peer-focus:text-orange text-sm font-bold text-white transition-colors duration-100`,
+    borderless ? 'px-2' : 'px5',
   );
 
   return (
@@ -88,11 +95,7 @@ export const TextInput: FC<TextInputProps> = ({
             )}
           </div>
           {label && (
-            <label
-              htmlFor={name}
-              className={`peer-focus:text-orange px-5 text-sm font-bold
-              text-white transition-colors duration-100`}
-            >
+            <label htmlFor={name} className={labelClasses}>
               {label}
             </label>
           )}

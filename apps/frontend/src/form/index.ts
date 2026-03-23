@@ -1,5 +1,5 @@
-import { FormButton } from '@/components/button/FormButton';
-import { TextInput } from '@/components/input/TextInput';
+import { FormButton } from '@/components/ui/button/FormButton';
+import { TextInput } from '@/components/ui/input/TextInput';
 import { createFormHook, createFormHookContexts } from '@tanstack/react-form';
 import { ZodError } from 'zod';
 

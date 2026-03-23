@@ -1,1 +1,0 @@
-export { getRooms } from './rooms'
