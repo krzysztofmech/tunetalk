@@ -1,32 +1,61 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   /* orange color */
-  --color-orange: #F18F01;
+  --color-orange: #f18f01;
+  --color-orange-lighter: #fea51f;
+  --color-orange-darker: #ed9121;
+  --color-orange-darkest: #f28500;
   --color-orange-transparent: rgba(241, 143, 1, 0.5);
   --color-orange-ghost: rgba(241, 143, 1, 0.2);
-  --color-orange-darker: #EF5613;
-  --color-orange-darker-ghost: rgba(239, 86, 19, 0.2);
-  --color-orange-darker-transparent: rgba(239, 86, 19, 0.5);
-  --color-orange-lighter: #F69F79;
-  --color-orange-lighter-transparent: rgba(246, 159, 121, 0.5);
-  --color-orange-lighter-ghost: rgba(246, 159, 121, 0.2);
 
   /* background color */
-  --color-main-background: #0F0F0F;
+  --color-main-background: #0f0f0f;
   --color-main-background-transparent: rgba(15, 15, 15, 0.5);
   --color-main-background-less-transparent: rgba(15, 15, 15, 0.7);
-  --color-main-background-lighter: #3D3D3D;
-  --color-main-background-darker: #000000;
+  --color-main-background-lighter: #181818;
+  --color-main-background-darker: #0a0a0a;
 
   /* white color */
-  --color-white: #FFFFFF;
+  --color-white: #ffffff;
   --color-white-transparent: rgba(255, 255, 255, 0.5);
+  --color-white-ghost: rgba(255, 255, 255, 0.2);
+  /* grey color */
+  --color-main-grey: #333333;
 
   /* status colors */
-  --color-alert: #CF5454;
+  --color-alert: #cf5454;
   --color-alert-transparent: rgba(207, 84, 84, 0.5);
   --color-alert-less-transparent: rgba(207, 84, 84, 0.7);
+
+  --color-alert-intense: #df3151;
+  --color-alert-intense-lighter: #e55a74;
+  --color-alert-intense-darker: #c41e3d;
+  --color-alert-intense-darkest: #a21932;
+  --color-alert-intense-transparent: rgba(223, 49, 81, 0.5);
+  --color-alert-intense-lighter-transparent: rgba(229, 90, 116, 0.5);
+
+  /* animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  --animate-fade-in: fadeIn 0.2s ease-out;
+  --animate-fade-out: fadeOut 0.2s ease-out;
 }
 
 @theme inline {
@@ -36,8 +65,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: var(--color-main-background);
-    --foreground: var(--color-main-background);
+    --background: var(--color-main-background-darker);
+    --foreground: var(--color-main-background-lighter);
   }
 }
 

@@ -7,11 +7,7 @@ import (
 
 func ValidateCreateRoomParams(p repositories.CreateRoomParams) error {
 	if p.Name == "" {
-		return errors.New("CreateRoom - Name is required")
-	}
-
-	if p.CreatorID == "" {
-		return errors.New("CreateRoom - CreatorID is required")
+		return errors.New("CreateRoom - name is required")
 	}
 
 	return nil

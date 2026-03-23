@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
+	"tunetalk/internal/models"
 	"tunetalk/internal/repositories"
 	"tunetalk/internal/services"
 	"tunetalk/internal/validators"
@@ -37,14 +37,13 @@ func (h *RoomsHandler) GetRoomById(w http.ResponseWriter, req *http.Request) {
 
 	id := chi.URLParam(req, "id")
 	if id == "" {
-		log.Println(id)
 		util.WriteError(w, http.StatusBadRequest, "GetRoomById - no id found in path")
 		return
 	}
 
 	room, err := h.roomsService.GetRoomById(ctx, id)
 	if err != nil {
-		util.WriteError(w, http.StatusNotFound, "GetRoomById - failed to get a room")
+		util.WriteError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -54,24 +53,28 @@ func (h *RoomsHandler) GetRoomById(w http.ResponseWriter, req *http.Request) {
 func (h *RoomsHandler) CreateRoom(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	params, err := util.ParseParams[repositories.CreateRoomParams](req.Body)
+	cookie, err := req.Cookie("auth_cookie")
+
 	if err != nil {
-		util.WriteError(w, http.StatusBadRequest, "CreateRoom - invalid params")
+		util.WriteError(w, http.StatusUnauthorized, err.Error())
 		return
 	}
 
-	err = validators.ValidateCreateRoomParams(params)
+	var room models.Room
+
+	user, err := util.DecodeCookie(cookie.Value)
 	if err != nil {
-		util.WriteError(w, http.StatusBadRequest, err.Error())
+		util.WriteError(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
-	err = h.roomsService.CreateRoom(ctx, params)
+	room, err = h.roomsService.CreateRoom(ctx, user.ID, user.Name)
 	if err != nil {
 		util.WriteError(w, http.StatusInternalServerError, "CreateRoom - failed to create a room")
 		return
 	}
 
-	util.WriteJSON(w, http.StatusOK, nil)
+	util.WriteJSON(w, http.StatusOK, room)
 }
 
 func (h *RoomsHandler) UpdateRoom(w http.ResponseWriter, req *http.Request) {
@@ -79,7 +82,7 @@ func (h *RoomsHandler) UpdateRoom(w http.ResponseWriter, req *http.Request) {
 
 	id := chi.URLParam(req, "id")
 	if id == "" {
-		util.WriteError(w, http.StatusBadRequest, "DeleteRoom - no id found in path")
+		util.WriteError(w, http.StatusBadRequest, "UpdateRoom - no id found in path")
 		return
 	}
 
@@ -96,7 +99,7 @@ func (h *RoomsHandler) UpdateRoom(w http.ResponseWriter, req *http.Request) {
 
 	err = h.roomsService.UpdateRoom(ctx, params, id)
 	if err != nil {
-		util.WriteError(w, http.StatusNotFound, "UpdateRoom - failed to update a room")
+		util.WriteError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -113,7 +116,7 @@ func (h *RoomsHandler) DeleteRoom(w http.ResponseWriter, req *http.Request) {
 
 	err := h.roomsService.DeleteRoom(ctx, id)
 	if err != nil {
-		util.WriteError(w, http.StatusNotFound, "DeleteRoom - failed to delete a room")
+		util.WriteError(w, http.StatusInternalServerError, "DeleteRoom - failed to delete a room")
 		return
 	}
 

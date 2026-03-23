@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Roboto_Condensed, Roboto_Mono } from 'next/font/google';
 import './globals.css';
 import { ClientProviders } from '@/providers/ClientProviders';
-import { Toaster } from 'sonner'
+import { Toaster } from 'sonner';
 
 const robotoCondensed = Roboto_Condensed({
   variable: '--font-roboto-condensed',
@@ -32,7 +32,7 @@ export default function RootLayout({
             antialiased`}
         >
           {children}
-          <Toaster expand={true} visibleToasts={100}/>
+          <Toaster expand={true} visibleToasts={100} />
         </body>
       </ClientProviders>
     </html>

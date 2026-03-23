@@ -1,4 +1,4 @@
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils/cn';
 import { DynamicIcon, IconName } from 'lucide-react/dynamic';
 import Link from 'next/link';
 import {
@@ -10,23 +10,35 @@ import {
 } from 'react';
 
 const styles = {
-  default:
-    'enabled:cursor-pointer rounded-md font-bold transtion-colors duration-200 focus:outline-none flex items-center justify-center text-sm gap-2',
+  default: `enabled:cursor-pointer rounded-md font-bold transition-colors duration-200 
+    focus:outline-none flex items-center justify-center text-sm gap-2`,
+  variants: {
+    primary: `bg-orange text-white ring-1 ring-orange-lighter 
+      hover:bg-orange-darker
+      active:bg-orange-darkest`,
+    danger: `bg-alert-intense text-white ring-1 ring-alert-intense-lighter
+      hover:bg-alert-intense-darker
+      active:bg-alert-intense-darkest`,
+    secondary: `text-white
+      hover:bg-white-ghost
+      active:bg-white-transparent`,
+    icon: `text-white
+      hover:text-orange
+      active:text-orange-lighter`,
+    linkDefault: 'text-white hover:underline focus:underline focus:underline',
+    linkOrange: 'text-orange hover:underline focus:underline focus:underline',
+    textWithIcon: `text-white
+      hover:text-orange
+      active:text-orange-lighter`,
+    menuItem: `text-white
+      hover:text-orange
+      active:text-orange-lighter`,
+  },
   sizes: {
     default: 'h-10 px-4 py-2',
     sm: 'h-8 px-3 rounded-md',
     lg: 'h-11 px-8 rounded-md',
     link: 'p-0 m-0 bg-transparent',
-  },
-  variants: {
-    filled:
-      'bg-white text-main-background enabled:hover:bg-orange enabled:hover:text-white disabled:bg-orange-transparent disabled:text-white-transparent disabled:hover:bg-orange-darker-transparent',
-    outlined:
-      'ring-1 ring-orange text-orange enabled:hover:bg-orange-ghost disabled:bg-orange-lighter-ghost disabled:ring-orange-transparent disabled:text-white-transparent disabled:hover:bg-orange-darker-ghost',
-    ghost:
-      'text-orange enabled:hover:bg-orange-ghost enabled:hover:text-orange disabled:text-white-transparent disabled:hover:bg-orange-lighter-ghost',
-    linkDefault: 'text-orange hover:underline active:underline focus:underline',
-    linkWhite: 'text-white hover:underline active:underline focus:underline',
   },
 };
 
@@ -34,8 +46,8 @@ type Variant = keyof typeof styles.variants;
 type Size = keyof typeof styles.sizes;
 
 interface ClickButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  buttonType: 'click';
-  onClick: (e: MouseEvent<HTMLButtonElement>) => void;
+  buttonType?: 'click';
+  onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
   loading?: boolean;
   size?: Size;
   variant?: Variant;
@@ -53,7 +65,7 @@ export interface SubmitButtonProps
 interface LinkButtonProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   buttonType: 'link';
   href: string;
-  variant: 'linkDefault' | 'linkWhite';
+  variant: 'linkDefault' | 'linkOrange';
   size?: Size;
   external?: boolean;
 }
@@ -64,7 +76,7 @@ type ButtonProps = (ClickButtonProps | SubmitButtonProps | LinkButtonProps) & {
 
 export const Button: FC<ButtonProps> = ({
   size = 'default',
-  variant = 'filled',
+  variant = 'primary',
   buttonType,
   children,
   className,
@@ -125,7 +137,7 @@ export const Button: FC<ButtonProps> = ({
 
   return (
     <button
-      className={cn(classes, icon ? 'h-10 w-10 p-0' : '')}
+      className={cn(classes, icon && !children ? 'h-10 w-10 p-0' : '')}
       type="button"
       disabled={loading || disabled}
       onClick={onClick}
@@ -136,7 +148,15 @@ export const Button: FC<ButtonProps> = ({
           {loading ? (
             <DynamicIcon name="loader-circle" className="animate-spin" />
           ) : (
-            <DynamicIcon name={icon} size={16} />
+            <div
+              className={cn(
+                'flex w-full items-center',
+                !children ? 'justify-center' : 'justify-start',
+              )}
+            >
+              <DynamicIcon name={icon} size={20} />
+              {children && <div className="pl-5">{children}</div>}
+            </div>
           )}
         </>
       ) : (
