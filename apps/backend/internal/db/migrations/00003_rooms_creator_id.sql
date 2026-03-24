@@ -5,5 +5,5 @@ ALTER TABLE rooms
     FOREIGN KEY (creator_id) REFERENCES users(id);
 
 -- +goose Down
-ALTER TABLE IF EXISTS rooms DROP FOREIGN KEY rooms_creator_id_fk;
+ALTER TABLE rooms DROP FOREIGN KEY rooms_creator_id_fk;
 ALTER TABLE rooms DROP COLUMN creator_id;
