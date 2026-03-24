@@ -2,10 +2,7 @@
 FROM golang:1.26.1-alpine AS app-builder
 WORKDIR /app
 RUN apk add --no-cache make;
-COPY Makefile go.mod go.sum main.go ./
-COPY util/ util/
-COPY router/ router/
-COPY internal/ internal/
+COPY . . 
 RUN make -d deps;
 RUN make -d build;
 
