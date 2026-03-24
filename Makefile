@@ -16,3 +16,6 @@ up-db-api:
 db-it:
 # connect to database running in container
 	docker exec -it docker-tunetalk-db-1 mysql -h localhost -u tunetalk -ptunetalk-password tunetalk-test-db
+db-clean:
+# remove volume with database
+	docker compose -f docker/compose.yaml down -v
