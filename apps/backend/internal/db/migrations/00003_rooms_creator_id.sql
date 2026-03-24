@@ -6,4 +6,4 @@ ALTER TABLE rooms
 
 -- +goose Down
 ALTER TABLE IF EXISTS rooms DROP FOREIGN KEY rooms_creator_id_fk;
-ALTER TABLE IF EXISTS rooms DROP COLUMN IF EXISTS creator_id;
+ALTER TABLE rooms DROP COLUMN creator_id;
