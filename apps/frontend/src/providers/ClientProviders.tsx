@@ -1,5 +1,3 @@
-'use client';
-
 import { Socket } from '@/context/Socket';
 import { FC, ReactNode } from 'react';
 import { QueryProvider } from './QueryProvider';

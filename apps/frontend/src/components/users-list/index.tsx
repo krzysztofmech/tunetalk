@@ -1,13 +1,11 @@
-'use client';
-
 import { useGetUsers } from '@/api/get-users';
 import { FC, useState } from 'react';
 import { Button } from '../ui/button/Button';
 import { me } from '@/api/me';
-import { useRouter } from 'next/navigation';
 import { useMe } from '@/context/Me';
 import { User } from '@/types/api';
 import { useCreateUser } from '@/api/create-user';
+import { useNavigate } from '@tanstack/react-router';
 
 interface UsersListProps {}
 
@@ -18,14 +16,16 @@ export const UsersList: FC<UsersListProps> = ({}) => {
 
   const [username, setUsername] = useState('');
 
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const handleAuth = async (user: User) => {
     const response = await me(user.id);
 
     if (response.success) {
       setMe(user);
-      router.replace('/dashboard');
+      navigate({
+        to: '/dashboard',
+      });
     }
   };
 
@@ -55,7 +55,7 @@ export const UsersList: FC<UsersListProps> = ({}) => {
             ))}
           </>
         ) : (
-          <div className='flex flex-col justify-center items-center gap-5'>
+          <div className="flex flex-col items-center justify-center gap-5">
             <input
               onChange={(e) => setUsername(e.target.value)}
               className="peer placeholder:text-main-white ring-main-white

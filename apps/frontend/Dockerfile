@@ -9,8 +9,8 @@ RUN pnpm i;
 FROM node:25-alpine3.22 AS app-builder 
 ARG API_URL
 ARG WS_URL
-ENV NEXT_PUBLIC_API_URL=${API_URL}
-ENV NEXT_PUBLIC_WS_URL=${WS_URL}
+ENV VITE_API_URL=${API_URL}
+ENV VITE_WS_URL=${WS_URL}
 WORKDIR /app
 COPY --from=app-deps /app/node_modules ./node_modules
 COPY . .
@@ -21,9 +21,12 @@ RUN pnpm run build;
 FROM node:25-alpine3.22
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=app-builder /app/.next ./.next
+RUN npm install -g pnpm@latest-10
+
+COPY --from=app-builder /app/.tanstack ./.tanstack
 COPY --from=app-builder /app/public ./public
+COPY --from=app-builder /app/.output ./.output
 COPY --from=app-deps /app/package.json ./package.json
 COPY --from=app-deps /app/node_modules ./node_modules
 EXPOSE 3000
-CMD ["npm", "run", "start"]
+CMD ["pnpm", "run", "start"]

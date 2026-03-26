@@ -1,21 +1,21 @@
-'use client';
+import { useGetRoom } from '@/features/dashboard/api/get-room';
+import { useGetRooms } from '@/features/dashboard/api/get-rooms';
+import { Banner } from '@/features/dashboard/components';
+import { createFileRoute } from '@tanstack/react-router';
 
-import { useGetRoom } from '../../api/get-room';
-import { useGetRooms } from '../../api/get-rooms';
-import { useRoomParams } from '../../hooks/useRoomParams';
-import { Banner } from './components/banner';
+export const Route = createFileRoute('/dashboard/rooms/$id')({
+  component: Room,
+});
 
-export interface RoomProps {}
-
-export default function Room() {
+function Room() {
   const { refetch: refetchRooms } = useGetRooms();
-  const params = useRoomParams();
+  const { id } = Route.useParams()
 
   const {
     data: roomData,
     isLoading: isRoomLoading,
     refetch: refetchRoom,
-  } = useGetRoom(params.id);
+  } = useGetRoom(id);
 
   const { data } = roomData ?? {};
 

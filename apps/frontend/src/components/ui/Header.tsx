@@ -1,6 +1,6 @@
-import { Avatar } from '@/components/ui/button/Avatar';
 import { FC } from 'react';
 import { Users, MessageCircle } from 'lucide-react';
+import { Avatar } from './button/Avatar';
 
 interface HeaderProps {}
 
