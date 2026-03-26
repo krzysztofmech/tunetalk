@@ -63,11 +63,9 @@
   --font-mono: var(--font-roboto-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: var(--color-main-background-darker);
-    --foreground: var(--color-main-background-lighter);
-  }
+:root {
+  --background: var(--color-main-background-darker);
+  --foreground: var(--color-main-background-lighter);
 }
 
 body {

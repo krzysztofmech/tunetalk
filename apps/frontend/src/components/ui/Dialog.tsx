@@ -1,6 +1,7 @@
 import { Dispatch, FC, ReactNode, SetStateAction, useState } from 'react';
 import { Dialog as DialogPrimitive } from '@base-ui/react';
 import { Button } from './button/Button';
+import { X } from 'lucide-react';
 
 interface DialogProps {
   isOpen: boolean;
@@ -39,7 +40,7 @@ export const Dialog: FC<DialogProps> = ({
             {showCloseButton && (
               <div>
                 <DialogPrimitive.Close
-                  render={<Button icon="x" variant="icon" />}
+                  render={<Button Icon={X} variant="icon" />}
                 ></DialogPrimitive.Close>
               </div>
             )}
