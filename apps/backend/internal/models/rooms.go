@@ -1,14 +1,14 @@
 package models
 
 type Room struct {
-	ID        string `json:"id"`
+	ID        int    `json:"id"`
 	Name      string `json:"name"`
-	CreatorID string `json:"creatorId"`
+	CreatorID int    `json:"creatorId"`
 }
 
 type RoomWithUser struct {
-	ID          string `json:"id"`
+	ID          int    `json:"id"`
 	Name        string `json:"name"`
-	CreatorID   string `json:"creatorId"`
+	CreatorID   int    `json:"creatorId"`
 	CreatorName string `json:"creatorName"`
 }
