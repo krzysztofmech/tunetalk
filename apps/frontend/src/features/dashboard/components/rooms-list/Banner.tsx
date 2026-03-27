@@ -1,16 +1,17 @@
 import { useAppForm } from '@/form';
 import { FC, FormEvent, useState } from 'react';
-import { useUpdateRoom } from '@/app/dashboard/api/update-room';
 import { QueryObserverResult } from '@tanstack/react-query';
 import { IApiResponse, Room } from '@/types';
 import { ValueLoading } from '@/components/ui/loading/ValueLoading';
 import { Button } from '@/components/ui/button/Button';
 import { Action, DropdownMenu } from '@/components/ui/DropdownMenu';
 import { Dialog } from '@/components/ui/Dialog';
-import { useDeleteRoom } from '@/app/dashboard/api/delete-room';
 import { useAlert } from '@/context/Alert';
-import { useRouter } from 'next/navigation';
 import z from 'zod';
+import { useUpdateRoom } from '../../api/update-room';
+import { useDeleteRoom } from '../../api/delete-room';
+import { useNavigate } from '@tanstack/react-router';
+import { EllipsisVertical } from 'lucide-react';
 
 interface BannerProps {
   id: string;
@@ -44,7 +45,7 @@ export const Banner: FC<BannerProps> = ({
   const [isEditOpen, setIsEditOpen] = useState(false);
   const { showAlert } = useAlert();
 
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const { AppField, FormButton, AppForm, handleSubmit } = useAppForm({
     defaultValues: {
@@ -77,7 +78,10 @@ export const Banner: FC<BannerProps> = ({
     const response = await deleteRoom(id);
     if (response.success) {
       await refetchRooms();
-      router.replace('/dashboard');
+      navigate({
+        to: '/dashboard',
+        replace: true,
+      });
     }
   };
 
@@ -137,7 +141,7 @@ export const Banner: FC<BannerProps> = ({
         <DropdownMenu
           trigger={
             <Button
-              icon="ellipsis-vertical"
+              Icon={EllipsisVertical}
               variant="icon"
               className="rounded-full"
             />

@@ -95,7 +95,7 @@ func (h *UsersHandler) Me(w http.ResponseWriter, req *http.Request) {
 
 	cookie := &http.Cookie{
 		Name:     "auth_cookie",
-		Value:    fmt.Sprintf("%s|%s", user.ID, user.Name),
+		Value:    fmt.Sprintf("%v|%s", user.ID, user.Name),
 		MaxAge:   36000000,
 		SameSite: http.SameSiteLaxMode,
 		HttpOnly: true,

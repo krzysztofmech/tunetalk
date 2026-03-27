@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"log"
 	"tunetalk/internal/models"
 )
 
@@ -67,7 +66,7 @@ func (r *RoomsRepository) GetRoomById(ctx context.Context, id string) (models.Ro
 	return room, err
 }
 
-func (r *RoomsRepository) CreateRoom(ctx context.Context, name string, creatorID string) (models.Room, error) {
+func (r *RoomsRepository) CreateRoom(ctx context.Context, creatorID int, name string) (models.Room, error) {
 	const CountQuery = `
 	SELECT COUNT(*) FROM rooms;
 	`
@@ -90,7 +89,6 @@ func (r *RoomsRepository) CreateRoom(ctx context.Context, name string, creatorID
 	VALUES(?, ?)
 	`
 
-	log.Printf("%s %s", name, creatorID)
 	room_name := fmt.Sprintf("%s's room #%v", name, count + 1)
 
 	res, err := r.db.ExecContext(ctx, InsertQuery, room_name, creatorID)

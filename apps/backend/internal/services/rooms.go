@@ -24,8 +24,8 @@ func (s *RoomsService) GetRoomById(ctx context.Context, id string) (models.RoomW
 	return s.repo.GetRoomById(ctx, id)
 }
 
-func (s *RoomsService) CreateRoom(ctx context.Context, name string, creatorID string) (models.Room, error) {
-	return s.repo.CreateRoom(ctx, name, creatorID)
+func (s *RoomsService) CreateRoom(ctx context.Context, creatorID int, name string) (models.Room, error) {
+	return s.repo.CreateRoom(ctx, creatorID, name)
 }
 
 func (s *RoomsService) UpdateRoom(ctx context.Context, params repositories.UpdateRoomParams, id string) error {

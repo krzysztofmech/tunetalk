@@ -1,8 +1,7 @@
-'use client';
 import { FC } from 'react';
-import { formOpts } from './form-options';
 import { useAppForm } from '@/form';
 import { Button } from '@/components/ui/button/Button';
+import { formOpts } from '../form-options';
 
 export const Form: FC = () => {
   const { AppField, handleSubmit, AppForm, FormButton } = useAppForm(formOpts);
@@ -59,7 +58,7 @@ export const Form: FC = () => {
         </div>
       </form>
       <div className="mt-8 flex items-center justify-center text-xs font-bold">
-        <p className="text-main-background-lighter mr-2 text-xs font-bold">
+        <p className="text-white-ghost mr-2 text-xs font-bold">
           Already have an account?
         </p>
         <Button

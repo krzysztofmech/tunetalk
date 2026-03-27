@@ -1,5 +1,4 @@
 import { formOptions } from '@tanstack/react-form';
-import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
 const schema = z
@@ -27,11 +26,6 @@ export const formOpts = formOptions({
     onSubmit: schema,
   },
   onSubmit: async () => {
-    return new Promise((resolve) => {
-      // TODO: replace with actual api call
-      setTimeout(() => {
-        redirect('/dashboard');
-      }, 1000);
-    });
+    console.log('sign-up')
   },
 });

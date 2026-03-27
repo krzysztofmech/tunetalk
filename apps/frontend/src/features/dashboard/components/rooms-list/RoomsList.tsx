@@ -1,16 +1,14 @@
-'use client';
-
 import { FC } from 'react';
 import { useGetRooms } from '../../api/get-rooms';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button/Button';
+import { useNavigate } from '@tanstack/react-router';
 
 interface RoomsListProps {}
 
 export const RoomsList: FC<RoomsListProps> = ({}) => {
   const { data, isSuccess } = useGetRooms();
 
-  const router = useRouter();
+  const navigate = useNavigate();
 
   return (
     <div className="grid grid-cols-3 gap-5">
@@ -20,7 +18,9 @@ export const RoomsList: FC<RoomsListProps> = ({}) => {
               key={id}
               variant="secondary"
               onClick={() => {
-                router.push(`/dashboard/room/${id}`);
+                navigate({
+                  to: `/dashboard/rooms/${id}`,
+                });
               }}
             >
               {name}

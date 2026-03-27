@@ -1,13 +1,15 @@
-import { cn } from '@/lib/utils/cn';
-import { DynamicIcon, IconName } from 'lucide-react/dynamic';
-import Link from 'next/link';
 import {
   AnchorHTMLAttributes,
   ButtonHTMLAttributes,
   FC,
+  ForwardRefExoticComponent,
   MouseEvent,
   ReactNode,
+  RefAttributes,
 } from 'react';
+import { cn } from '@/lib/utils/cn';
+import { Link } from '@tanstack/react-router';
+import { LoaderCircle, LucideProps } from 'lucide-react';
 
 const styles = {
   default: `enabled:cursor-pointer rounded-md font-bold transition-colors duration-200 
@@ -51,11 +53,12 @@ interface ClickButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
   size?: Size;
   variant?: Variant;
-  icon?: IconName;
+  Icon?: ForwardRefExoticComponent<
+    Omit<LucideProps, 'ref'> & RefAttributes<SVGSVGElement>
+  >;
 }
 
-export interface SubmitButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface SubmitButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   buttonType: 'submit';
   loading?: boolean;
   size?: Size;
@@ -107,7 +110,7 @@ export const Button: FC<ButtonProps> = ({
       );
     }
     return (
-      <Link href={href} className={linkClasses} {...rest}>
+      <Link to={href} className={linkClasses} {...rest}>
         {children}
       </Link>
     );
@@ -124,29 +127,27 @@ export const Button: FC<ButtonProps> = ({
         disabled={loading || disabled}
         {...(rest as SubmitButtonProps)}
       >
-        {loading && (
-          <DynamicIcon name="loader-circle" className="animate-spin" />
-        )}
+        {loading && <LoaderCircle className="animate-spin" />}
         {children}
       </button>
     );
   }
 
-  const { disabled, loading, onClick, icon, ...rest } =
+  const { disabled, loading, onClick, Icon, ...rest } =
     props as ClickButtonProps;
 
   return (
     <button
-      className={cn(classes, icon && !children ? 'h-10 w-10 p-0' : '')}
+      className={cn(classes, Icon && !children ? 'h-10 w-10 p-0' : '')}
       type="button"
       disabled={loading || disabled}
       onClick={onClick}
       {...rest}
     >
-      {icon ? (
+      {Icon ? (
         <>
           {loading ? (
-            <DynamicIcon name="loader-circle" className="animate-spin" />
+            <LoaderCircle className="animate-spin" />
           ) : (
             <div
               className={cn(
@@ -154,16 +155,14 @@ export const Button: FC<ButtonProps> = ({
                 !children ? 'justify-center' : 'justify-start',
               )}
             >
-              <DynamicIcon name={icon} size={20} />
+              <Icon size={20} />
               {children && <div className="pl-5">{children}</div>}
             </div>
           )}
         </>
       ) : (
         <>
-          {loading && (
-            <DynamicIcon name="loader-circle" className="animate-spin" />
-          )}
+          {loading && <LoaderCircle className="animate-spin" />}
           {children}
         </>
       )}
