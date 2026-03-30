@@ -12,21 +12,29 @@ type SocketProps = {
 
 type SocketContextValue = {
   socket: WebSocket;
-  connect: (username: string, userId: string, roomId: string) => void;
+  initWs: (name: string | null, userId: number | null, roomId: number) => void;
   isConnected: boolean;
 };
 
 const SocketContext = createContext<SocketContextValue | null>(null);
 
 export const Socket: React.FC<SocketProps> = ({ children }) => {
-  const socket = useRef<any | null>(null);
+  const socket = useRef<WebSocket | null>(null);
   const url = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080';
   const [isConnected, setIsConnected] = useState(false);
 
-  const connect = (username: string, userId: string, roomId: string) => {
+  const initWs = async (
+    name: string | null,
+    userId: number | null,
+    roomId: number,
+  ) => {
+    if (!name || !userId) {
+      return
+    }
+
     if (!socket.current) {
       socket.current = new WebSocket(
-        `${url}/ws?username=${username}&userId=${userId}&roomId=${roomId}`,
+        `${url}/ws?name=${name}&userId=${userId}&roomId=${roomId}`,
       );
     }
     setIsConnected(true);
@@ -35,8 +43,8 @@ export const Socket: React.FC<SocketProps> = ({ children }) => {
   return (
     <SocketContext.Provider
       value={{
-        socket: socket.current,
-        connect,
+        socket: socket.current!,
+        initWs,
         isConnected,
       }}
     >

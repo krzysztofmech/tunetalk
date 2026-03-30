@@ -1,15 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSocketContext } from '../context/Socket';
-import { Data, MessageType } from '@/constants/websocket';
+import { Signal, SignalType } from '@/constants/websocket';
 import { toast } from 'sonner';
-import { v4 } from 'uuid';
+import { useMe } from '@/context/Me';
 
 export const useWebSocket = () => {
-  const { socket, connect, isConnected } = useSocketContext();
+  const { id, name } = useMe();
+  const { socket, initWs, isConnected } = useSocketContext();
 
-  const [username, setUsername] = useState('');
-  const userId = useRef(v4())
-  const [roomId, setRoomId] = useState<string | null>(null);
+  const [roomId, setRoomId] = useState<number | null>(null);
 
   useEffect(() => {
     if (socket) {
@@ -26,21 +25,29 @@ export const useWebSocket = () => {
     });
 
     socket.addEventListener('message', (event) => {
-      const data: Data = JSON.parse(event.data);
-      const { type, username, payload } = data;
+      const data: Signal = JSON.parse(event.data);
+      const { type, payload } = data;
 
       switch (type) {
-        case MessageType.JOINED_ROOM:
-          toast(`${username} joined the room`, {
+        case SignalType.JOINED_ROOM:
+          toast(`${name} joined the room`, {
             position: 'bottom-left',
             duration: 5000,
           });
 
           break;
-        case MessageType.MESSAGE:
+        case SignalType.MESSAGE:
           toast(payload, {
             position: 'bottom-center',
             duration: 5000,
+          });
+
+          break;
+        case SignalType.ERROR:
+          toast(JSON.stringify(event.data, null, 2), {
+            position: 'bottom-right',
+            duration: 25000,
+            closeButton: true,
           });
 
           break;
@@ -62,32 +69,31 @@ export const useWebSocket = () => {
     });
   };
 
-  const joinRoom = (roomId: string) => {
-    connect(username, userId.current, roomId);
+  const connect = (roomId: number) => {
+    initWs(name, id, roomId);
     setRoomId(roomId);
   };
 
-  const sendMessage = (payload: string) => {
-    const message = createMessage(payload);
-    socket.send(message);
+  const send = (payload: string, type: SignalType) => {
+    const signal = createSignal(payload, type);
+    socket.send(signal);
   };
 
-  const createMessage = (payload: string) => {
-    const message: Data = {
-      type: MessageType.MESSAGE,
+  const createSignal = (payload: string, type: SignalType) => {
+    const signal: Signal = {
+      type,
       payload,
-      username,
-      clientId: userId.current,
+      sender: name!,
+      senderId: id!,
       roomId: roomId!,
     };
 
-    return JSON.stringify(message);
+    return JSON.stringify(signal);
   };
 
   return {
-    joinRoom,
+    connect,
     isConnected,
-    sendMessage,
-    setUsername,
+    send,
   };
 };

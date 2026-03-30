@@ -1,4 +1,4 @@
-import { RoomsList } from '@/features/dashboard/components'
+import { RoomsList } from '@/features/rooms/components/RoomsList'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/dashboard/')({
