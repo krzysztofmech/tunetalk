@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"tunetalk/internal/repositories"
 	"tunetalk/internal/ws"
+	"tunetalk/util"
 
 	"github.com/gorilla/websocket"
 )
@@ -40,9 +42,20 @@ func (h *CoreHandler) Connect(w http.ResponseWriter, r *http.Request) {
 
 	q := r.URL.Query()
 
-	username := q.Get("username")
-	clientId := q.Get("userId")
-	roomId := q.Get("roomId")
+	username := q.Get("name")
+
+	clientId, err := util.ParseIdParam(q.Get("userId"))
+	if err != nil {
+		log.Print(q.Get("userId"))
+		fmt.Printf("[WS] Connect - invalid userId")
+		return
+	}
+
+	roomId, err := util.ParseIdParam(q.Get("roomId"))
+	if err != nil {
+		fmt.Printf("[WS] Connect - invalid roomId")
+		return
+	}
 
 	ctx := r.Context()
 	room, err := h.repo.GetRoomById(ctx, roomId)
@@ -51,7 +64,7 @@ func (h *CoreHandler) Connect(w http.ResponseWriter, r *http.Request) {
 		h.core.Rooms[roomId] = &ws.Room{
 			ID:      roomId,
 			Name:    room.Name,
-			Clients: make(map[string]*ws.Client),
+			Clients: make(map[int]*ws.Client),
 		}
 	}
 

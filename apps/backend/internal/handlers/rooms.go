@@ -35,8 +35,8 @@ func (h *RoomsHandler) GetRooms(w http.ResponseWriter, req *http.Request) {
 func (h *RoomsHandler) GetRoomById(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	id := chi.URLParam(req, "id")
-	if id == "" {
+	id, err := util.ParseIdParam(chi.URLParam(req, "id"))
+	if err != nil {
 		util.WriteError(w, http.StatusBadRequest, "GetRoomById - no id found in path")
 		return
 	}

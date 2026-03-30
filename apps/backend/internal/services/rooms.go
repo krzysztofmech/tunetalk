@@ -20,7 +20,7 @@ func (s *RoomsService) GetRooms(ctx context.Context) ([]models.Room, error) {
 	return s.repo.GetRooms(ctx)
 }
 
-func (s *RoomsService) GetRoomById(ctx context.Context, id string) (models.RoomWithUser, error) {
+func (s *RoomsService) GetRoomById(ctx context.Context, id int) (models.RoomWithUser, error) {
 	return s.repo.GetRoomById(ctx, id)
 }
 

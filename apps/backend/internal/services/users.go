@@ -24,6 +24,6 @@ func (s *UsersService) GetUsers(ctx context.Context) ([]models.User, error) {
 	return s.repo.GetUsers(ctx)
 }
 
-func (s *UsersService) GetUser(ctx context.Context, id string) (models.User, error) {
+func (s *UsersService) GetUser(ctx context.Context, id int) (models.User, error) {
 	return s.repo.GetUser(ctx, id)
 }

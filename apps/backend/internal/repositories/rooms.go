@@ -55,7 +55,7 @@ func (r *RoomsRepository) GetRooms(ctx context.Context) ([]models.Room, error) {
 	return rooms, nil
 }
 
-func (r *RoomsRepository) GetRoomById(ctx context.Context, id string) (models.RoomWithUser, error) {
+func (r *RoomsRepository) GetRoomById(ctx context.Context, id int) (models.RoomWithUser, error) {
 	const Query = `SELECT rooms.*, users.name AS creator_name FROM rooms INNER JOIN users ON rooms.creator_id = users.id WHERE rooms.id = ?`
 
 	row := r.db.QueryRowContext(ctx, Query, id)
