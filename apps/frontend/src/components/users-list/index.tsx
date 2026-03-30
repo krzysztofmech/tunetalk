@@ -1,11 +1,11 @@
 import { useGetUsers } from '@/api/get-users';
 import { FC, useState } from 'react';
 import { Button } from '../ui/button/Button';
-import { me } from '@/api/me';
 import { useMe } from '@/context/Me';
 import { User } from '@/types/api';
 import { useCreateUser } from '@/api/create-user';
 import { useNavigate } from '@tanstack/react-router';
+import { login } from '@/api/login';
 
 interface UsersListProps {}
 
@@ -19,7 +19,7 @@ export const UsersList: FC<UsersListProps> = ({}) => {
   const navigate = useNavigate();
 
   const handleAuth = async (user: User) => {
-    const response = await me(user.id);
+    const response = await login(user.id);
 
     if (response.success) {
       setMe(user);

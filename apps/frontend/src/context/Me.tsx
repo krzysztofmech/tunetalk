@@ -1,33 +1,38 @@
+import { useGetMe } from '@/api/me';
+import { IApiResponse } from '@/types';
 import { User } from '@/types/api';
-import { createContext, FC, ReactNode, useContext, useRef } from 'react';
+import {
+  RefetchOptions,
+  RefetchQueryFilters,
+  QueryObserverResult,
+} from '@tanstack/react-query';
+import { createContext, FC, ReactNode, useContext } from 'react';
 
 type MeContextProps = {
   children: ReactNode;
 };
 
 type MeContextValue = {
-  id: string | null;
+  id: number | null;
   name: string | null;
-  setMe: (user: User) => void;
+  isLoading: boolean;
+  refetch: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined,
+  ) => Promise<QueryObserverResult<IApiResponse<User>, unknown>>;
 };
 
 const MeContext = createContext<MeContextValue | null>(null);
 
 export const Me: FC<MeContextProps> = ({ children }) => {
-  const id = useRef<string | null>(null);
-  const name = useRef<string | null>(null);
-
-  const setMe = (user: User) => {
-    id.current = user.id;
-    name.current = user.name;
-  };
+  const { data, isLoading, refetch } = useGetMe();
 
   return (
     <MeContext.Provider
       value={{
-        id: id.current,
-        name: name.current,
-        setMe,
+        id: data?.data.id || null,
+        name: data?.data.name || null,
+        isLoading,
+        refetch,
       }}
     >
       {children}

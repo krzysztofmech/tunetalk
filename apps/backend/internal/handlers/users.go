@@ -61,8 +61,8 @@ func (h *UsersHandler) GetUsers(w http.ResponseWriter, req *http.Request) {
 func (h *UsersHandler) GetUser(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	id := chi.URLParam(req, "id")
-	if id == "" {
+	id, err := util.ParseIdParam(chi.URLParam(req, "id"))
+	if err != nil {
 		util.WriteError(w, http.StatusBadRequest, "GetUser - no id found in path")
 		return
 	}
@@ -77,11 +77,11 @@ func (h *UsersHandler) GetUser(w http.ResponseWriter, req *http.Request) {
 	util.WriteJSON(w, http.StatusOK, user)
 }
 
-func (h *UsersHandler) Me(w http.ResponseWriter, req *http.Request) {
+func (h *UsersHandler) Login(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
-	id := chi.URLParam(req, "id")
+	id, err := util.ParseIdParam(chi.URLParam(req, "id"))
 
-	if id == "" {
+	if err != nil {
 		util.WriteError(w, http.StatusBadRequest, "Me - no id found in path")
 		return
 	}
@@ -99,10 +99,34 @@ func (h *UsersHandler) Me(w http.ResponseWriter, req *http.Request) {
 		MaxAge:   36000000,
 		SameSite: http.SameSiteLaxMode,
 		HttpOnly: true,
-		Path: "/",
+		Path:     "/",
 	}
 
 	http.SetCookie(w, cookie)
 	util.WriteJSON(w, http.StatusOK, "Authorized")
 }
 
+func (h *UsersHandler) Me(w http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
+
+	cookie, err := req.Cookie("auth_cookie")
+
+	if err != nil {
+		util.WriteError(w, http.StatusBadRequest, "Me - no cookie found")
+		return
+	}
+
+	storedUser, err := util.DecodeCookie(cookie.Value)
+	if err != nil {
+		util.WriteError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	user, err := h.usersService.GetUser(ctx, storedUser.ID)
+
+	if err != nil {
+		util.WriteError(w, http.StatusUnauthorized, "Me - user not found - you need to create an account")
+	}
+
+	util.WriteJSON(w, http.StatusOK, user)
+}
