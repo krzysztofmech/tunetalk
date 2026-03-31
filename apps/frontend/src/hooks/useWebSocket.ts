@@ -12,11 +12,11 @@ export const useWebSocket = () => {
 
   useEffect(() => {
     if (socket) {
-      addListeners();
+      addListeners(socket);
     }
   }, [isConnected]);
 
-  const addListeners = () => {
+  const addListeners = (socket: WebSocket) => {
     socket.addEventListener('open', (event) => {
       toast('connected to server', {
         position: 'bottom-left',
@@ -75,6 +75,7 @@ export const useWebSocket = () => {
   };
 
   const send = (payload: string, type: SignalType) => {
+    if (!socket) return;
     const signal = createSignal(payload, type);
     socket.send(signal);
   };

@@ -11,7 +11,7 @@ type SocketProps = {
 };
 
 type SocketContextValue = {
-  socket: WebSocket;
+  socket: WebSocket | null;
   initWs: (name: string | null, userId: number | null, roomId: number) => void;
   isConnected: boolean;
 };
@@ -29,7 +29,7 @@ export const Socket: React.FC<SocketProps> = ({ children }) => {
     roomId: number,
   ) => {
     if (!name || !userId) {
-      return
+      return;
     }
 
     if (!socket.current) {
@@ -43,7 +43,7 @@ export const Socket: React.FC<SocketProps> = ({ children }) => {
   return (
     <SocketContext.Provider
       value={{
-        socket: socket.current!,
+        socket: socket.current,
         initWs,
         isConnected,
       }}
