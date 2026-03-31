@@ -4,11 +4,11 @@ import { useMutation } from '@tanstack/react-query';
 
 export type Payload = {
   name: string;
-  id: string;
+  id: number;
 };
 
 export const updateRoom = async (
-  id: string,
+  id: number,
   name: string,
 ): Promise<IApiResponse<null>> => {
   return api.patch(`/rooms/${id}`, {

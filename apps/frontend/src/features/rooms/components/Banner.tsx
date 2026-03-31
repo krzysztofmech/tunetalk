@@ -12,18 +12,14 @@ import { useNavigate } from '@tanstack/react-router';
 import { EllipsisVertical } from 'lucide-react';
 import { useDeleteRoom } from '../api/delete-room';
 import { useUpdateRoom } from '../api/update-room';
+import { useGetRooms } from '../api/get-rooms';
+import { useGetRoom } from '../api/get-room';
 
 interface BannerProps {
   id: number;
   name: string;
   creatorName: string;
   isLoading: boolean;
-  refetchRooms: <TPageData>() => Promise<
-    QueryObserverResult<IApiResponse<Room[]>, unknown>
-  >;
-  refetchRoom: <TPageData>() => Promise<
-    QueryObserverResult<IApiResponse<Room>, unknown>
-  >;
 }
 
 const editRoomSchema = z.object({
@@ -35,9 +31,9 @@ export const Banner: FC<BannerProps> = ({
   name,
   creatorName,
   isLoading,
-  refetchRoom,
-  refetchRooms,
 }) => {
+  const { refetch: refetchRooms } = useGetRooms();
+  const { refetch: refetchRoom } = useGetRoom(id);
   const { mutateAsync: updateRoom, isLoading: isUpdateRoomLoading } =
     useUpdateRoom();
   const { mutateAsync: deleteRoom } = useDeleteRoom();

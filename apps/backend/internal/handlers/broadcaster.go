@@ -1,10 +1,8 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 	"tunetalk/internal/services"
-	"tunetalk/internal/types"
 	"tunetalk/internal/validators"
 	"tunetalk/util"
 )
@@ -40,20 +38,5 @@ func (h *BroadcasterHandler) Connect(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	writeSDP(w, http.StatusOK, answer)
-}
-
-func writeSDP(w http.ResponseWriter, status int, v any) {
-	var response = &types.ApiResponse{
-		Success: true,
-		Status:  status,
-		Message: "",
-		Data:    v,
-	}
-
-	w.Header().Set("Content-Type", "application/sdp")
-	w.WriteHeader(status)
-	_ = json.NewEncoder(w).Encode(
-		response,
-	)
+	util.WriteJSON(w, http.StatusOK, answer)
 }

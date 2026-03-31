@@ -1,7 +1,6 @@
-import { FC, useRef } from 'react';
+import { FC } from 'react';
 import { Banner } from './Banner';
 import { useGetRoom } from '../api/get-room';
-import { useGetRooms } from '../api/get-rooms';
 import { useRoom } from '../hooks/useRoom';
 
 interface RoomProps {
@@ -9,21 +8,22 @@ interface RoomProps {
 }
 
 export const Room: FC<RoomProps> = ({ id }) => {
-  const { refetch: refetchRooms } = useGetRooms();
-  const { data: roomData, isLoading, refetch: refetchRoom } = useGetRoom(id);
-  const { data } = roomData ?? {};
+  const {
+    data: roomData,
+    isLoading: isDataLoading,
+  } = useGetRoom(id);
+  const { audioRef, isJoining } = useRoom({ roomId: id });
 
-  const { audioRef } = useRoom({ roomId: data?.id || null });
+  const { data } = roomData ?? {};
+  const isLoading = isDataLoading || isJoining;
 
   return (
     <div>
       <Banner
-        id={data?.id || 0}
+        id={id}
         name={data?.name || ''}
         creatorName={data?.creator_name || ''}
         isLoading={isLoading}
-        refetchRooms={refetchRooms}
-        refetchRoom={refetchRoom}
       />
       <audio ref={audioRef} autoPlay />
     </div>

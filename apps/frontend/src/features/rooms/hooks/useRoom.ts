@@ -1,41 +1,38 @@
 import { useWebSocket } from '@/hooks';
 import { api } from '@/lib/api-client';
 import { IApiResponse } from '@/types';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type UseRoomProps = {
-  roomId: number | null;
+  roomId: number;
 };
 
 export const useRoom = ({ roomId }: UseRoomProps) => {
   const pc = useRef<RTCPeerConnection | null>(null);
   const { connect } = useWebSocket();
+  const [isJoining, setIsJoining] = useState(false);
+
+  useEffect(() => {
+    joinRoom();
+  }, [roomId]);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  useEffect(() => {
-    if (roomId) {
-      connect(roomId);
-      joinRoom();
-    }
-  }, [roomId]);
-
   const joinRoom = async () => {
-    if (!roomId) {
-      return;
-    }
-
     try {
-      pc.current = new RTCPeerConnection({
-        iceServers: [
-          {
-            urls: 'stun:stun.l.google.com:19302',
-          },
-        ],
-      });
-      pc.current.addTransceiver('audio', { direction: 'recvonly' });
+      setIsJoining(true);
 
-      if (pc.current) {
+      connect(roomId);
+
+      if (!pc.current) {
+        pc.current = new RTCPeerConnection({
+          iceServers: [
+            {
+              urls: 'stun:stun.l.google.com:19302',
+            },
+          ],
+        });
+        pc.current.addTransceiver('audio', { direction: 'recvonly' });
         addListeners();
 
         const offer = await pc.current.createOffer();
@@ -49,6 +46,8 @@ export const useRoom = ({ roomId }: UseRoomProps) => {
       }
     } catch (err: any) {
       throw new Error(err);
+    } finally {
+      setIsJoining(false);
     }
   };
 
@@ -59,8 +58,13 @@ export const useRoom = ({ roomId }: UseRoomProps) => {
         pc.current?.iceConnectionState,
       );
     pc.current!.ontrack = (e) => {
-      audioRef!.current!.srcObject = e.streams[0];
-      audioRef!.current?.play();
+      if (audioRef.current) {
+        audioRef.current.srcObject = e.streams[0];
+        return;
+      }
+
+      pc.current?.close();
+      console.error('no access to audio tag');
     };
   };
 
@@ -71,7 +75,6 @@ export const useRoom = ({ roomId }: UseRoomProps) => {
           await api.post(
             '/broadcaster',
             {
-              room_id: roomId,
               sdp: pc.current!.localDescription.sdp,
             },
             {
@@ -91,5 +94,6 @@ export const useRoom = ({ roomId }: UseRoomProps) => {
   return {
     joinRoom,
     audioRef,
+    isJoining,
   };
 };
