@@ -126,6 +126,7 @@ func (h *UsersHandler) Me(w http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		util.WriteError(w, http.StatusUnauthorized, "Me - user not found - you need to create an account")
+		return
 	}
 
 	util.WriteJSON(w, http.StatusOK, user)

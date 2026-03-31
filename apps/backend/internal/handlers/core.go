@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"tunetalk/internal/repositories"
 	"tunetalk/internal/ws"
@@ -46,14 +45,15 @@ func (h *CoreHandler) Connect(w http.ResponseWriter, r *http.Request) {
 
 	clientId, err := util.ParseIdParam(q.Get("userId"))
 	if err != nil {
-		log.Print(q.Get("userId"))
 		fmt.Printf("[WS] Connect - invalid userId")
+		_ = conn.Close()
 		return
 	}
 
 	roomId, err := util.ParseIdParam(q.Get("roomId"))
 	if err != nil {
 		fmt.Printf("[WS] Connect - invalid roomId")
+		_ = conn.Close()
 		return
 	}
 

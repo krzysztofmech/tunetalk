@@ -55,6 +55,10 @@ func (s *BroadcasterService) CreateAnswer(ctx context.Context, params ConnectPar
 	offer := webrtc.SessionDescription{Type: webrtc.SDPTypeOffer, SDP: params.SDP}
 
 	track, err := getTrack()
+	if err != nil {
+		return nil, fmt.Errorf("CreateAnswer - failed to get track:%w", err)
+	}
+
 	answer, err := handleOffer(offer, track)
 	if err != nil {
 		return nil, fmt.Errorf("CreateAnswer - failed to create an answer: %w", err)
