@@ -1,12 +1,14 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router';
 import { Header } from '@/components/ui/Header';
-import { ControlPanel, RoomsList } from '@/features/dashboard/components';
+import { ControlPanel } from '@/features/control-panel/components/ControlPanel';
+import { useMe } from '@/context/Me';
 
 export const Route = createFileRoute('/dashboard')({
   component: DashboardHome,
 });
 
 function DashboardHome() {
+  useMe();
   return (
     <div className="flex min-h-screen flex-col p-2.5">
       <Header />

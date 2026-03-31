@@ -1,93 +1,117 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSocketContext } from '../context/Socket';
-import { Data, MessageType } from '@/constants/websocket';
+import { Signal, SignalType } from '@/constants/websocket';
 import { toast } from 'sonner';
-import { v4 } from 'uuid';
+import { useMe } from '@/context/Me';
 
 export const useWebSocket = () => {
-  const { socket, connect, isConnected } = useSocketContext();
+  const { id, name } = useMe();
+  const { socket, initWs, isConnected } = useSocketContext();
 
-  const [username, setUsername] = useState('');
-  const userId = useRef(v4())
-  const [roomId, setRoomId] = useState<string | null>(null);
+  const [roomId, setRoomId] = useState<number | null>(null);
 
   useEffect(() => {
     if (socket) {
-      addListeners();
+      addListeners(socket);
+      return () => removeListeners(socket);
     }
   }, [isConnected]);
 
-  const addListeners = () => {
-    socket.addEventListener('open', (event) => {
-      toast('connected to server', {
-        position: 'bottom-left',
-        duration: 5000,
-      });
-    });
+  const addListeners = (socket: WebSocket) => {
+    socket.addEventListener('open', onOpen);
 
-    socket.addEventListener('message', (event) => {
-      const data: Data = JSON.parse(event.data);
-      const { type, username, payload } = data;
+    socket.addEventListener('message', onMessage);
 
-      switch (type) {
-        case MessageType.JOINED_ROOM:
-          toast(`${username} joined the room`, {
-            position: 'bottom-left',
-            duration: 5000,
-          });
+    socket.addEventListener('error', onError);
 
-          break;
-        case MessageType.MESSAGE:
-          toast(payload, {
-            position: 'bottom-center',
-            duration: 5000,
-          });
+    socket.addEventListener('close', onClose);
+  };
 
-          break;
-
-        default:
-          console.log(
-            'unidentified message received',
-            JSON.stringify(event.data, null, 2),
-          );
-          break;
-      }
-    });
-
-    socket.addEventListener('error', (error) => {
-      console.error('error', error);
-    });
-    socket.addEventListener('close', () => {
-      console.log('disconnected');
+  const onOpen = () => {
+    toast('connected to server', {
+      position: 'bottom-left',
+      duration: 5000,
     });
   };
 
-  const joinRoom = (roomId: string) => {
-    connect(username, userId.current, roomId);
+  const onMessage = (event: MessageEvent) => {
+    const data: Signal = JSON.parse(event.data);
+    const { type, payload } = data;
+
+    switch (type) {
+      case SignalType.JOINED_ROOM:
+        toast(`${name} joined the room`, {
+          position: 'bottom-left',
+          duration: 5000,
+        });
+
+        break;
+      case SignalType.MESSAGE:
+        toast(payload, {
+          position: 'bottom-center',
+          duration: 5000,
+        });
+
+        break;
+      case SignalType.ERROR:
+        toast(JSON.stringify(event.data, null, 2), {
+          position: 'bottom-right',
+          duration: 25000,
+          closeButton: true,
+        });
+
+        break;
+
+      default:
+        console.log(
+          'unidentified message received',
+          JSON.stringify(event.data, null, 2),
+        );
+        break;
+    }
+  };
+
+  const onError = (event: Event) => {
+    console.error('error', event);
+  };
+
+  const onClose = () => {
+    console.log('disconnected');
+  };
+
+  const removeListeners = (socket: WebSocket) => {
+    socket.removeEventListener('open', onOpen);
+    socket.removeEventListener('message', onMessage);
+    socket.removeEventListener('error', onError);
+    socket.removeEventListener('close', onClose);
+  };
+
+  const connect = (roomId: number) => {
+    initWs(name, id, roomId);
     setRoomId(roomId);
   };
 
-  const sendMessage = (payload: string) => {
-    const message = createMessage(payload);
-    socket.send(message);
+  const send = (payload: string, type: SignalType) => {
+    if (!socket) return;
+    const signal = createSignal(payload, type);
+    socket.send(signal);
   };
 
-  const createMessage = (payload: string) => {
-    const message: Data = {
-      type: MessageType.MESSAGE,
+  const createSignal = (payload: string, type: SignalType) => {
+    const signal: Signal = {
+      type,
       payload,
-      username,
-      clientId: userId.current,
+      sender: name!,
+      senderId: id!,
       roomId: roomId!,
     };
 
-    return JSON.stringify(message);
+    return JSON.stringify(signal);
   };
 
   return {
-    joinRoom,
+    connect,
     isConnected,
-    sendMessage,
-    setUsername,
+    send,
   };
 };

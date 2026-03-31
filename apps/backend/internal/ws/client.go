@@ -9,9 +9,9 @@ import (
 )
 
 type Client struct {
-	ID       string `json:"id"`
+	ID       int    `json:"id"`
 	Username string `json:"username"`
-	RoomID   string `json:"roomId"`
+	RoomID   int    `json:"roomId"`
 	Conn     *websocket.Conn
 	Message  chan *Message
 }
@@ -19,9 +19,9 @@ type Client struct {
 type Message struct {
 	Type     string `json:"type"`
 	Payload  string `json:"payload"`
-	Username string `json:"username"`
-	ClientId string `json:"clientId"`
-	RoomId   string `json:"roomId"`
+	Sender   string `json:"sender"`
+	SenderId int    `json:"senderId"`
+	RoomId   int    `json:"roomId"`
 }
 
 func (cl *Client) ReadMessage(core *Core) {
@@ -46,6 +46,7 @@ func (cl *Client) ReadMessage(core *Core) {
 		}
 
 		core.Broadcast <- msg
+
 	}
 }
 

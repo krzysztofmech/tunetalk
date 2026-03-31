@@ -1,6 +1,6 @@
 export type Room = {
-  id: string;
+  id: number;
   name: string;
-  creatorId: string;
-  creatorName: string;
+  creator_id: number;
+  creator_name: string;
 };

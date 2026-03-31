@@ -7,5 +7,5 @@ export interface IApiResponse<T> {
 
 export interface User {
   name: string;
-  id: string;
+  id: number;
 }

@@ -7,11 +7,11 @@ import (
 	"strconv"
 )
 
-func ParseIdParam(param string) (int64, error) {
-	var id int64
+func ParseIdParam(param string) (int, error) {
+	var id int
 
 	if param != "" {
-		if id, err := strconv.ParseInt(param, 10, 64); err == nil {
+		if id, err := strconv.Atoi(param); err == nil {
 
 			return id, nil
 		}

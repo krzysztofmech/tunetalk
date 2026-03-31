@@ -44,6 +44,10 @@ func SetupRouter(wsService *ws.Core) *chi.Mux {
 			r.Route("/rooms", func(r chi.Router) {
 				routes.CreateRoomsRoute(r, db)
 			})
+			r.Route("/broadcaster", func(r chi.Router) {
+				routes.CreateBroadcasterRoute(r, db)
+			})
+
 		})
 		r.Route("/users", func(r chi.Router) {
 			routes.CreateUsersRoute(r, db)

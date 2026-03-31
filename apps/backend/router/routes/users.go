@@ -15,7 +15,8 @@ func CreateUsersRoute(r chi.Router, db *sql.DB) {
 	h := handlers.NewUsersHandler(s)
 
 	// TODO: Implement auth
-	r.Get("/me/{id}", h.Me)
+	r.Get("/me", h.Me)
+	r.Get("/login/{id}", h.Login)
 
 	r.Get("/", h.GetUsers)
 	r.Get("/{id}", h.GetUser)

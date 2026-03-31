@@ -1,12 +1,13 @@
-export enum MessageType {
+export enum SignalType {
   JOINED_ROOM = 'joined_room',
   MESSAGE = 'message',
+  ERROR = "error",
 }
 
-export type Data = {
-  type: MessageType;
+export type Signal = {
+  type: SignalType;
   payload: any;
-  username: string;
-  clientId: string;
-  roomId: string;
+  sender: string;
+  senderId: number;
+  roomId: number;
 };

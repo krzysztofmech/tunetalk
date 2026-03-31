@@ -80,7 +80,7 @@ func (r *UsersRepository) GetUsers(ctx context.Context) ([]models.User, error) {
 	return users, nil
 }
 
-func (r *UsersRepository) GetUser(ctx context.Context, id string) (models.User, error) {
+func (r *UsersRepository) GetUser(ctx context.Context, id int) (models.User, error) {
 	const Query = `SELECT * FROM users WHERE id = ?`
 	row := r.db.QueryRowContext(ctx, Query, id)
 
