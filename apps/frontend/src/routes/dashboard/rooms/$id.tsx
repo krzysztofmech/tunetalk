@@ -6,7 +6,12 @@ export const Route = createFileRoute('/dashboard/rooms/$id')({
 });
 
 function Room() {
-  const { id } = Route.useParams();
+  const params = Route.useParams();
+  const id = Number(params.id);
+
+  if (!id) {
+    return null;
+  }
 
   return <RoomComponent id={id} />;
 }

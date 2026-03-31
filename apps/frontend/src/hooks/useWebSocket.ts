@@ -13,60 +13,77 @@ export const useWebSocket = () => {
   useEffect(() => {
     if (socket) {
       addListeners(socket);
+      return () => removeListeners(socket);
     }
   }, [isConnected]);
 
   const addListeners = (socket: WebSocket) => {
-    socket.addEventListener('open', (event) => {
-      toast('connected to server', {
-        position: 'bottom-left',
-        duration: 5000,
-      });
+    socket.addEventListener('open', onOpen);
+
+    socket.addEventListener('message', onMessage);
+
+    socket.addEventListener('error', onError);
+
+    socket.addEventListener('close', onClose);
+  };
+
+  const onOpen = () => {
+    toast('connected to server', {
+      position: 'bottom-left',
+      duration: 5000,
     });
+  };
 
-    socket.addEventListener('message', (event) => {
-      const data: Signal = JSON.parse(event.data);
-      const { type, payload } = data;
+  const onMessage = (event: MessageEvent) => {
+    const data: Signal = JSON.parse(event.data);
+    const { type, payload } = data;
 
-      switch (type) {
-        case SignalType.JOINED_ROOM:
-          toast(`${name} joined the room`, {
-            position: 'bottom-left',
-            duration: 5000,
-          });
+    switch (type) {
+      case SignalType.JOINED_ROOM:
+        toast(`${name} joined the room`, {
+          position: 'bottom-left',
+          duration: 5000,
+        });
 
-          break;
-        case SignalType.MESSAGE:
-          toast(payload, {
-            position: 'bottom-center',
-            duration: 5000,
-          });
+        break;
+      case SignalType.MESSAGE:
+        toast(payload, {
+          position: 'bottom-center',
+          duration: 5000,
+        });
 
-          break;
-        case SignalType.ERROR:
-          toast(JSON.stringify(event.data, null, 2), {
-            position: 'bottom-right',
-            duration: 25000,
-            closeButton: true,
-          });
+        break;
+      case SignalType.ERROR:
+        toast(JSON.stringify(event.data, null, 2), {
+          position: 'bottom-right',
+          duration: 25000,
+          closeButton: true,
+        });
 
-          break;
+        break;
 
-        default:
-          console.log(
-            'unidentified message received',
-            JSON.stringify(event.data, null, 2),
-          );
-          break;
-      }
-    });
+      default:
+        console.log(
+          'unidentified message received',
+          JSON.stringify(event.data, null, 2),
+        );
+        break;
+    }
+  };
 
-    socket.addEventListener('error', (error) => {
-      console.error('error', error);
-    });
-    socket.addEventListener('close', () => {
-      console.log('disconnected');
-    });
+  const onError = (event: Event) => {
+    console.error('error', event);
+  };
+
+  const onClose = () => {
+    console.log('disconnected');
+  };
+
+  const removeListeners = (socket: WebSocket) => {
+    socket.removeEventListener('open', onOpen);
+    socket.removeEventListener('message', onMessage);
+    socket.removeEventListener('error', onError);
+    socket.removeEventListener('close', onClose);
   };
 
   const connect = (roomId: number) => {

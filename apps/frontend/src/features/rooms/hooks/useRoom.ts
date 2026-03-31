@@ -9,18 +9,16 @@ type UseRoomProps = {
 
 export const useRoom = ({ roomId }: UseRoomProps) => {
   const pc = useRef<RTCPeerConnection | null>(null);
-  const { connect, isConnected: isWsConnected } = useWebSocket();
+  const { connect } = useWebSocket();
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    if (!isWsConnected && roomId) {
+    if (roomId) {
       connect(roomId);
-      return;
+      joinRoom();
     }
-
-    joinRoom();
-  }, [isWsConnected, roomId]);
+  }, [roomId]);
 
   const joinRoom = async () => {
     if (!roomId) {

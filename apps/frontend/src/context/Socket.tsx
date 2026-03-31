@@ -23,7 +23,7 @@ export const Socket: React.FC<SocketProps> = ({ children }) => {
   const url = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080';
   const [isConnected, setIsConnected] = useState(false);
 
-  const initWs = async (
+  const initWs = (
     name: string | null,
     userId: number | null,
     roomId: number,

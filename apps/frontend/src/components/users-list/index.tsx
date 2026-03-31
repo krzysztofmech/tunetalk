@@ -1,7 +1,6 @@
 import { useGetUsers } from '@/api/get-users';
 import { FC, useState } from 'react';
 import { Button } from '../ui/button/Button';
-import { useMe } from '@/context/Me';
 import { User } from '@/types/api';
 import { useCreateUser } from '@/api/create-user';
 import { useNavigate } from '@tanstack/react-router';
@@ -10,7 +9,6 @@ import { login } from '@/api/login';
 interface UsersListProps {}
 
 export const UsersList: FC<UsersListProps> = ({}) => {
-  const { setMe } = useMe();
   const { data } = useGetUsers();
   const { mutateAsync } = useCreateUser();
 
@@ -22,7 +20,6 @@ export const UsersList: FC<UsersListProps> = ({}) => {
     const response = await login(user.id);
 
     if (response.success) {
-      setMe(user);
       navigate({
         to: '/dashboard',
       });

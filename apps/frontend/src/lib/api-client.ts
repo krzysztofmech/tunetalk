@@ -1,7 +1,6 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { IApiResponse } from '@/types';
 import { toast } from 'sonner';
-import { redirect } from '@tanstack/react-router';
 
 export const api = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL}/api`,
@@ -25,9 +24,8 @@ api.interceptors.response.use(
     });
 
     if (error.response?.status === 401) {
-      redirect({
-        to: '/',
-      });
+      window.location.href = '/';
+      return Promise.reject(error);
     }
   },
 );
