@@ -7,7 +7,7 @@ RUN make -d deps;
 RUN make -d build;
 
 # Application runtime 
-FROM gcr.io/distroless/base-debian13
+FROM debian:13
 COPY --from=app-builder /app/bin/server .
 COPY --from=app-builder /app/resources/ resources/
 EXPOSE 8080
