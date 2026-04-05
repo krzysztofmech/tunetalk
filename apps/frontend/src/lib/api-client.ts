@@ -22,10 +22,10 @@ api.interceptors.response.use(
       position: 'bottom-center',
       duration: 5000,
     });
-
     if (error.response?.status === 401) {
       window.location.href = '/';
-      return Promise.reject(error);
     }
+
+    return error.response?.data;
   },
 );

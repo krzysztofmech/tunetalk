@@ -9,10 +9,13 @@ logs:
 	docker compose -f docker/compose.yaml logs -f 
 up-db:
 # start only database (for backend api development)
-	docker compose -f docker/compose.yaml up --build -d tunetalk-db
+	docker compose -f docker/compose.yaml up --build -d tunetalk-db tunetalk-file-storage
+up-file-storage:
+# start only file-storage
+	docker compose -f docker/compose.yaml up --build -d tunetalk-file-storage
 up-db-api:
 # start only database and backend api (for Next app development)
-	docker compose -f docker/compose.yaml up --build -d tunetalk-db tunetalk-backend
+	docker compose -f docker/compose.yaml up --build -d tunetalk-db tunetalk-file-storage tunetalk-backend
 db-it:
 # connect to database running in container
 	docker exec -it docker-tunetalk-db-1 mysql -h localhost -u tunetalk -ptunetalk-password tunetalk-test-db

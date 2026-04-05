@@ -17,6 +17,17 @@ services:
     volumes: [tunetalk-db-data:/var/lib/mysql]
     ports: [3306:3306]
     networks: [tunetalk-network]
+  tunetalk-file-storage:
+    image: minio/minio:latest
+    container_name: tunetalk-file-storage
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9090:9090"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server --console-address ":9090" /data
   tunetalk-backend:
     build:
       context: ../apps/backend
@@ -27,7 +38,7 @@ services:
       DATABASE_PORT: 3306
       DATABASE_USER: tunetalk
       DATABASE_PASSWORD: tunetalk-password
-    depends_on: [tunetalk-db]
+    depends_on: [tunetalk-db, tunetalk-file-storage]
     ports: [8080:8080]
     networks: [tunetalk-network]
   tunetalk-frontend:

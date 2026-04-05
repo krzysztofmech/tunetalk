@@ -8,8 +8,9 @@ import (
 	"syscall"
 	"tunetalk/internal/db"
 	"tunetalk/internal/db/migrations"
+	"tunetalk/internal/router"
+	"tunetalk/internal/storage"
 	"tunetalk/internal/ws"
-	"tunetalk/router"
 
 	"github.com/joho/godotenv"
 )
@@ -50,14 +51,15 @@ func main() {
 
 	log.Printf("Server starting on port %s", port)
 
+	storage := storage.NewStorage()
+
 	wsService := ws.NewCore()
 
-	router := router.SetupRouter(wsService)
+	router := router.SetupRouter(wsService, storage)
 
 	go wsService.Run()
 
-	err := http.ListenAndServe(":"+port, router)
-	if err != nil {
+	if err := http.ListenAndServe(":"+port, router); err != nil {
 		log.Fatalf("Error starting server: %v", err)
 	}
 }

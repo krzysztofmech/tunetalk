@@ -101,8 +101,8 @@ export const useWebSocket = () => {
     const signal: Signal = {
       type,
       payload,
-      sender: name!,
-      senderId: id!,
+      sender: name,
+      senderId: id,
       roomId: roomId!,
     };
 

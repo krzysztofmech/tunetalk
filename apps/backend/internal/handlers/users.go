@@ -82,14 +82,14 @@ func (h *UsersHandler) Login(w http.ResponseWriter, req *http.Request) {
 	id, err := util.ParseIdParam(chi.URLParam(req, "id"))
 
 	if err != nil {
-		util.WriteError(w, http.StatusBadRequest, "Me - no id found in path")
+		util.WriteError(w, http.StatusBadRequest, "Login - no id found in path")
 		return
 	}
 
 	user, err := h.usersService.GetUser(ctx, id)
 
 	if err != nil {
-		util.WriteError(w, http.StatusNotFound, "Me - no user found with provided id")
+		util.WriteError(w, http.StatusNotFound, "Login - no user found with provided id")
 		return
 	}
 
@@ -103,7 +103,7 @@ func (h *UsersHandler) Login(w http.ResponseWriter, req *http.Request) {
 	}
 
 	http.SetCookie(w, cookie)
-	util.WriteJSON(w, http.StatusOK, "Authorized")
+	util.WriteJSON(w, http.StatusOK, user)
 }
 
 func (h *UsersHandler) Me(w http.ResponseWriter, req *http.Request) {
@@ -112,7 +112,7 @@ func (h *UsersHandler) Me(w http.ResponseWriter, req *http.Request) {
 	cookie, err := req.Cookie("auth_cookie")
 
 	if err != nil {
-		util.WriteError(w, http.StatusBadRequest, "Me - no cookie found")
+		util.WriteError(w, http.StatusUnauthorized, "Me - no cookie found")
 		return
 	}
 

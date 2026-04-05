@@ -7,14 +7,15 @@ import (
 	"tunetalk/internal/handlers"
 	"tunetalk/internal/middleware"
 	"tunetalk/internal/repositories"
+	"tunetalk/internal/router/routes"
+	"tunetalk/internal/storage"
 	"tunetalk/internal/ws"
-	"tunetalk/router/routes"
 
 	"github.com/go-chi/chi"
 	"github.com/rs/cors"
 )
 
-func SetupRouter(wsService *ws.Core) *chi.Mux {
+func SetupRouter(wsService *ws.Core, storage *storage.Storage) *chi.Mux {
 	db := db.GetDB()
 	r := chi.NewRouter()
 
@@ -47,7 +48,9 @@ func SetupRouter(wsService *ws.Core) *chi.Mux {
 			r.Route("/broadcaster", func(r chi.Router) {
 				routes.CreateBroadcasterRoute(r, db)
 			})
-
+			r.Route("/songs", func(r chi.Router) {
+				routes.CreateSongsRoute(r, db, storage)
+			})
 		})
 		r.Route("/users", func(r chi.Router) {
 			routes.CreateUsersRoute(r, db)
