@@ -4,12 +4,14 @@ import { Button } from '../ui/button/Button';
 import { User } from '@/types/api';
 import { useCreateUser } from '@/api/create-user';
 import { useNavigate } from '@tanstack/react-router';
-import { login } from '@/api/login';
+import { LoaderCircle } from 'lucide-react';
+import { useMe } from '@/context/Me';
 
 interface UsersListProps {}
 
 export const UsersList: FC<UsersListProps> = ({}) => {
-  const { data } = useGetUsers();
+  const { data, isLoading } = useGetUsers();
+  const { login } = useMe();
   const { mutateAsync } = useCreateUser();
 
   const [username, setUsername] = useState('');
@@ -17,9 +19,9 @@ export const UsersList: FC<UsersListProps> = ({}) => {
   const navigate = useNavigate();
 
   const handleAuth = async (user: User) => {
-    const response = await login(user.id);
+    const success = await login(user.id);
 
-    if (response.success) {
+    if (success) {
       navigate({
         to: '/dashboard',
       });
@@ -36,34 +38,43 @@ export const UsersList: FC<UsersListProps> = ({}) => {
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="flex flex-col items-center justify-center">
-        <div className="p-5 font-bold">
-          {data && data.data ? 'Pick a user' : 'Create a user'}
-        </div>
-        {data && data.data ? (
-          <>
-            {data.data.map(({ id, name }) => (
-              <Button
-                key={id}
-                variant="secondary"
-                onClick={() => handleAuth({ id, name })}
-              >
-                {name}
-              </Button>
-            ))}
-          </>
-        ) : (
-          <div className="flex flex-col items-center justify-center gap-5">
-            <input
-              onChange={(e) => setUsername(e.target.value)}
-              className="peer placeholder:text-main-white ring-main-white
-                focus:ring-orange w-full appearance-none rounded-md px-5 py-5
-                text-sm font-bold text-white ring-1 transition-all duration-100
-                outline-none hover:ring-white focus:outline-none"
-            />
+        <>
+          {!isLoading ? (
+            <>
+              <div className="p-5 font-bold">
+                {data && data.data ? 'Pick a user' : 'Create a user'}
+              </div>
+              {data && data.data ? (
+                <>
+                  {data.data.map(({ id, name }) => (
+                    <Button
+                      key={id}
+                      variant="secondary"
+                      onClick={() => handleAuth({ id, name })}
+                    >
+                      {name}
+                    </Button>
+                  ))}
+                </>
+              ) : (
+                <div className="flex flex-col items-center justify-center gap-5">
+                  <input
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="peer placeholder:text-main-white ring-main-white
+                      focus:ring-orange w-full appearance-none rounded-md px-5
+                      py-5 text-sm font-bold text-white ring-1 transition-all
+                      duration-100 outline-none hover:ring-white
+                      focus:outline-none"
+                  />
 
-            <Button onClick={() => handleJoin()}>Join</Button>
-          </div>
-        )}
+                  <Button onClick={() => handleJoin()}>Join</Button>
+                </div>
+              )}
+            </>
+          ) : (
+            <LoaderCircle className="animate-spin" />
+          )}
+        </>
       </div>
     </div>
   );

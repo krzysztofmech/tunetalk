@@ -2,8 +2,6 @@ package ws
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
 
 	"github.com/gorilla/websocket"
 )
@@ -41,7 +39,6 @@ func (cl *Client) ReadMessage(core *Core) {
 		err = json.Unmarshal(m, &msg)
 
 		if err != nil {
-			fmt.Println("unmarshal error:", err)
 			continue
 		}
 
@@ -52,13 +49,11 @@ func (cl *Client) ReadMessage(core *Core) {
 
 func (cl *Client) WriteMessage() {
 	defer func() {
-		log.Panicln("write message disconnect")
 		cl.Conn.Close()
 	}()
 
 	for {
 		m, ok := <-cl.Message
-		fmt.Println("new message")
 		if !ok {
 			return
 		}

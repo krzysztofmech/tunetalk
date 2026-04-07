@@ -1,38 +1,43 @@
-import { useGetMe } from '@/api/me';
+import { api } from '@/lib/api-client';
 import { IApiResponse } from '@/types';
 import { User } from '@/types/api';
-import {
-  RefetchOptions,
-  RefetchQueryFilters,
-  QueryObserverResult,
-} from '@tanstack/react-query';
-import { createContext, FC, ReactNode, useContext } from 'react';
+import { createContext, FC, ReactNode, useContext, useState } from 'react';
 
 type MeContextProps = {
   children: ReactNode;
 };
 
 type MeContextValue = {
-  id: number | null;
-  name: string | null;
-  isLoading: boolean;
-  refetch: <TPageData>(
-    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined,
-  ) => Promise<QueryObserverResult<IApiResponse<User>, unknown>>;
+  id: number;
+  name: string;
+  login: (id: number) => Promise<boolean>;
 };
 
 const MeContext = createContext<MeContextValue | null>(null);
 
 export const Me: FC<MeContextProps> = ({ children }) => {
-  const { data, isLoading, refetch } = useGetMe();
+  const [id, setId] = useState(0);
+  const [name, setName] = useState('');
+
+  const login = async (id: number) => {
+    const { data, success }: IApiResponse<User> = await api.get(
+      `/users/login/${id}`,
+    );
+
+    if (success) {
+      setId(data.id);
+      setName(data.name);
+    }
+
+    return success;
+  };
 
   return (
     <MeContext.Provider
       value={{
-        id: data?.data.id || null,
-        name: data?.data.name || null,
-        isLoading,
-        refetch,
+        id: id,
+        name: name,
+        login,
       }}
     >
       {children}

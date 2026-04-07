@@ -22,8 +22,6 @@ func InitDB() error {
 		user, password, host, port, name,
 	)
 
-	fmt.Printf(dsn)
-
 	var err error
 	db, err = sql.Open("mysql", dsn)
 	if err != nil {
