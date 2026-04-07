@@ -2,7 +2,6 @@ package storage
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
@@ -68,7 +67,6 @@ func (s *Storage) Upload(ctx context.Context, data UploadData) error {
 		data.Header.Size,
 		minio.PutObjectOptions{ContentType: "audio/mpeg", UserMetadata: metadata},
 	); err != nil {
-		fmt.Println(err)
 		return err
 	}
 

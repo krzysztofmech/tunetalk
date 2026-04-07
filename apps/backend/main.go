@@ -51,11 +51,11 @@ func main() {
 
 	log.Printf("Server starting on port %s", port)
 
-	storage := storage.NewStorage()
+	fileStorage := storage.NewStorage()
 
 	wsService := ws.NewCore()
 
-	router := router.SetupRouter(wsService, storage)
+	router := router.SetupRouter(wsService, fileStorage)
 
 	go wsService.Run()
 

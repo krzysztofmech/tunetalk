@@ -28,6 +28,7 @@ services:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
     command: server --console-address ":9090" /data
+    networks: [tunetalk-network]
   tunetalk-backend:
     build:
       context: ../apps/backend

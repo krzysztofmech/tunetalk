@@ -32,7 +32,7 @@ func (h *SongsHandler) Upload(w http.ResponseWriter, req *http.Request) {
 	title := req.FormValue("title")
 	artist := req.FormValue("artist")
 	if title == "" || artist == "" {
-		util.WriteError(w, http.StatusBadRequest, fmt.Errorf(`Upload - failed to get "title" and "arist" from form data: %w`, err).Error())
+		util.WriteError(w, http.StatusBadRequest, "Upload - failed to get 'title' and 'artist' from form data")
 		return
 	}
 
@@ -41,16 +41,17 @@ func (h *SongsHandler) Upload(w http.ResponseWriter, req *http.Request) {
 		util.WriteError(w, http.StatusBadRequest, fmt.Errorf(`Upload - failed to get a "song" from form data: %w`, err).Error())
 		return
 	}
+	defer file.Close()
 
 	cookie, err := req.Cookie("auth_cookie")
 	if err != nil {
-		util.WriteError(w, http.StatusInternalServerError, fmt.Errorf(`Upload - failed to get user from a provided cookie: %w`, err).Error())
+		util.WriteError(w, http.StatusUnauthorized, fmt.Errorf(`Upload - failed to get user from a provided cookie: %w`, err).Error())
 		return
 	}
 
 	user, err := util.DecodeCookie(cookie.Value)
 	if err != nil {
-		util.WriteError(w, http.StatusInternalServerError, fmt.Errorf(`Upload - failed to decode provided cookie: %w`, err).Error())
+		util.WriteError(w, http.StatusUnauthorized, fmt.Errorf(`Upload - failed to decode provided cookie: %w`, err).Error())
 		return
 	}
 
@@ -79,6 +80,7 @@ func (h *SongsHandler) DownloadSongByTitle(w http.ResponseWriter, req *http.Requ
 	object, err := h.service.DownloadSongByTitle(ctx, title)
 	if err != nil {
 		util.WriteError(w, http.StatusNotFound, fmt.Errorf(`DownloadSongByTitle - no song found with provided title: %w`, err).Error())
+		return
 	}
 
 	defer object.Close()

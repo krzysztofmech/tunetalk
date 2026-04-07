@@ -1,10 +1,10 @@
 -- +goose Up
 CREATE TABLE IF NOT EXISTS songs (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    title VARCHAR(50) NOT NULL UNIQUE,
+    title VARCHAR(50) NOT NULL,
     artist VARCHAR(50) NOT NULL,
     user_id BIGINT NOT NULL,
-    duration INT,
+    duration DOUBLE,
     created_at timestamp NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (id),
