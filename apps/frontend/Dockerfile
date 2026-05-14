@@ -23,10 +23,9 @@ WORKDIR /app
 ENV NODE_ENV=production
 RUN npm install -g pnpm@latest-10
 
-COPY --from=app-builder /app/.tanstack ./.tanstack
-COPY --from=app-builder /app/public ./public
-COPY --from=app-builder /app/.output ./.output
 COPY --from=app-deps /app/package.json ./package.json
 COPY --from=app-deps /app/node_modules ./node_modules
+COPY --from=app-builder /app/public ./public
+COPY --from=app-builder /app/.output ./.output
 EXPOSE 3000
 CMD ["pnpm", "run", "start"]
